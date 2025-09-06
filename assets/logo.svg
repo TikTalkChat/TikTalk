@@ -1,0 +1,54 @@
+<svg width="420" height="140" viewBox="0 0 420 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TikTalk animated logo">
+  <defs>
+    <!-- Bubble gradient -->
+    <linearGradient id="gBubble" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00eaff">
+        <animate attributeName="stop-color" dur="6s" values="#00eaff;#007bff;#6a00ff;#00eaff" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#007bff">
+        <animate attributeName="stop-color" dur="6s" values="#007bff;#6a00ff;#00eaff;#007bff" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+    <!-- Text gradient -->
+    <linearGradient id="gText" x1="0%" x2="100%">
+      <stop offset="0%" stop-color="#00eaff"/>
+      <stop offset="100%" stop-color="#6a00ff"/>
+    </linearGradient>
+
+    <!-- Glow -->
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g transform="translate(60,70)">
+    <!-- Smiley bubble -->
+    <g class="bubble">
+      <circle cx="0" cy="0" r="45" fill="url(#gBubble)"/>
+      <ellipse class="eye left" cx="-12" cy="-7" rx="4.5" ry="7" fill="#fff"/>
+      <path class="eye right" d="M 8 -7 Q 12 -11 16 -7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path class="smile" d="M -15 8 Q 0 22 15 8" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>
+    </g>
+
+    <!-- Text close to bubble -->
+    <text x="70" y="20" font-size="56" font-family="Segoe UI, Arial, sans-serif" font-weight="800" fill="url(#gText)">
+      TikTalk
+    </text>
+  </g>
+
+  <style>
+    .bubble { transform-origin: 50% 50%; animation: bubblePulse 3.6s ease-in-out infinite, bubbleRotate 8s linear infinite; filter: url(#softGlow);}
+    .eye { transform-origin: center; animation: eyePop 2s ease-in-out infinite; }
+    .smile { animation: smileJelly 2.6s cubic-bezier(.25,.9,.3,1) infinite; }
+
+    @keyframes bubblePulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+    @keyframes bubbleRotate { 0%{transform:rotate(-1deg);} 50%{transform:rotate(1deg);} 100%{transform:rotate(-1deg);} }
+    @keyframes eyePop { 0%,100%{transform:translateY(0);opacity:1;} 40%,60%{transform:translateY(-20px);opacity:0;} }
+    @keyframes smileJelly { 0%,100%{transform:translateY(0);} 40%{transform:translateY(2px) scaleY(.95);} 70%{transform:translateY(-1px) scaleY(1.05);} }
+  </style>
+</svg>
