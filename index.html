@@ -68,7 +68,7 @@
       display: block;
       transition: height 0.3s ease;
     }
-    /* FIX 4: New element for header status messages on desktop */
+    /* FIX 8: Styles for header status messages on desktop */
     #headerStatus {
         position: absolute;
         left: 50%;
@@ -81,6 +81,7 @@
         border-radius: 16px;
         display: none; /* Hidden by default */
         z-index: 10004;
+        align-items: center;
     }
     body.dark-mode #headerStatus {
         color: #e5e7eb;
@@ -100,7 +101,8 @@
       bottom: 0;
       overflow-y: auto;
       overscroll-behavior: contain;
-      padding: calc(76px + 10px + env(safe-area-inset-top)) 15px calc(110px + env(safe-area-inset-bottom));
+      /* FIX 2: Adjusted padding from 110px to 100px */
+      padding: calc(76px + 10px + env(safe-area-inset-top)) 15px calc(100px + env(safe-area-inset-bottom));
       -webkit-overflow-scrolling: touch;
       transition: all 0.3s ease;
       scroll-padding-top: 10px;
@@ -383,6 +385,10 @@
       box-sizing: border-box !important;
       border-radius: 16px;
       background: transparent !important;
+    }
+    /* FIX 3: Remove blue square on emoji selection */
+    .emoji-mart button {
+        -webkit-tap-highlight-color: transparent;
     }
     .emoji-mart button:focus,
     .emoji-mart button:active {
@@ -921,7 +927,7 @@
         top: calc(44px + env(safe-area-inset-top));
     }
     
-    /* FIX 3: Mobile animations now appear over the remote video without a solid background */
+    /* FIX 7: Mobile animations now appear over the remote video without a solid background */
     #statusOverlay { 
         display: none;
         position: absolute;
@@ -954,7 +960,6 @@
       bottom: 0;
       left: 0;
       right: 0;
-      /* FIX 1: Add a subtle gradient background to ensure text is always readable */
       background: linear-gradient(to top, rgba(0,0,0,0.4), transparent 50%);
       z-index: 101; 
       padding-top: 0;
@@ -964,7 +969,7 @@
       mask-image: linear-gradient(to top, black 80%, transparent 100%);
       transition: opacity 0.4s ease-in-out;
     }
-    /* FIX 5: Class to hide chat with footer */
+    /* FIX 4: Class to hide chat with footer */
     body.video-mode #chat.hidden {
         opacity: 0;
         pointer-events: none;
@@ -972,13 +977,18 @@
 
     body.video-mode #messages {
       color: #fff;
-      text-shadow: none; 
+      text-shadow: 0 1px 2px rgba(0,0,0,0.7);
     }
-    body.video-mode .msg,
-    body.video-mode .me,
+    /* FIX 9: Re-added semi-transparent background to messages for readability */
+    body.video-mode .msg {
+      background-color: rgba(0, 0, 0, 0.55) !important;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+    }
+    body.video-mode .me {
+      background-color: rgba(0, 80, 170, 0.7) !important;
+    }
     body.video-mode .stranger {
-      background-color: transparent !important;
-      box-shadow: none !important;
+      background-color: rgba(50, 50, 50, 0.7) !important;
     }
     body.video-mode .popup {
         color: #f0f0f0;
@@ -1008,7 +1018,7 @@
 
     /* === START: DESKTOP VIDEO MODE LAYOUT === */
     @media (min-width: 768px) {
-        /* FIX 2: Desktop video layout changes */
+        /* FIX 10: This was already correct */
         body.video-mode #video-container {
             flex-direction: row; /* Remote on left, Local on right */
         }
@@ -1017,12 +1027,11 @@
             height: 100%;
         }
         
-        /* Desktop status overlay is not used, header status is used instead */
         body.video-mode #statusOverlay {
            display: none !important;
         }
 
-        /* FIX 2: Chat positioned over local (right) video only */
+        /* FIX 10: This was already correct */
         body.video-mode #chat {
             top: 0;
             bottom: 0;
@@ -1063,7 +1072,6 @@
         <text x="120" y="70" font-size="56" font-family="Segoe UI, Arial, sans-serif" font-weight="800" fill="#007bff" dominant-baseline="middle" alignment-baseline="middle">TikTalk</text>
       </svg>
     </div>
-    <!-- FIX 4: New element for header status messages on desktop -->
     <div id="headerStatus"></div>
     <div class="right">
       <button id="videoToggleBtn" class="icon-btn" title="Toggle Video Mode">
@@ -1409,12 +1417,13 @@
       }, 2000);
     }
 
+    // FIX 1: Updated scroll logic
     function scrollToBottom(force = false) {
       const chatDiv = document.getElementById("chat");
       if (!chatDiv || chatDiv.style.display === 'none') return;
 
       if (force) {
-        chatDiv.scrollTop = chatDiv.scrollHeight;
+        chatDiv.scrollTo({ top: chatDiv.scrollHeight, behavior: 'smooth' });
         return;
       }
 
@@ -1494,7 +1503,8 @@
       } else {
         footer.style.transition = 'none';
         footer.style.bottom = `calc(10px + ${safeAreaBottom}px)`;
-        if(chatDiv && !document.body.classList.contains('video-mode')) chatDiv.style.paddingBottom = `calc(110px + ${safeAreaBottom}px)`;
+        // FIX 2: Adjusted padding from 110px to 100px
+        if(chatDiv && !document.body.classList.contains('video-mode')) chatDiv.style.paddingBottom = `calc(100px + ${safeAreaBottom}px)`;
         if(footerNote) footerNote.style.bottom = `calc(72px + ${safeAreaBottom}px)`;
         if(startChattingBtn) startChattingBtn.style.bottom = `calc(100px + ${safeAreaBottom}px)`;
         emojiPicker.style.bottom = isDesktop ? `calc(56px + 15px + ${safeAreaBottom}px)` : `calc(10px + ${safeAreaBottom}px)`;
@@ -1548,10 +1558,16 @@
       div.className = "msg " + who;
       div.textContent = text;
       fragment.appendChild(div);
-      messagesDiv.appendChild(fragment);
+      messagesDiv.appendChild(div);
+      // FIX 1: Trigger scroll after adding message
+      if (who === 'me') {
+        scrollToBottom(true);
+      } else {
+        scrollToBottom();
+      }
     }
 
-    // FIX 4 & 3: Modified function to handle desktop header status and mobile overlay
+    // FIX 7 & 8: Modified function to handle all status messages
     function showPopup(text) { 
         const statusOverlay = document.getElementById("statusOverlay");
         const headerStatus = document.getElementById("headerStatus");
@@ -1560,20 +1576,24 @@
         
         let popupContent = '';
         let headerContent = '';
+        
+        const searchingHTML = `<div class="popup"><div class="searching-container"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text">Searching Stranger...</div></div></div>`;
+        const connectedHTML = `<div class="popup"><span class="connected-checkmark"></span><span>Connected! Say Hi 👋</span></div>`;
+        const disconnectedHTML = `<div class="popup">❌ Stranger disconnected</div>`;
 
         // --- Handle Desktop Video Mode ---
         if (isVideoEnabled && isDesktop) {
             messagesDiv.innerHTML = '';
             statusOverlay.style.display = 'none';
-            chatDiv.style.display = 'block'; // Chat is always visible on desktop
+            chatDiv.style.display = 'block';
 
             if (text.includes("Searching")) {
-                headerContent = `🔍 Searching...`;
+                headerContent = `<div class="searching-container" style="padding:0;"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text" style="color: inherit;">Searching...</div></div>`;
                 isConnected = false;
             } else if (text.includes("Connected")) {
                 headerContent = `✅ Connected!`;
                 isConnected = true;
-                setTimeout(() => { // Hide connected message after a few seconds
+                setTimeout(() => {
                     if(headerStatus.textContent.includes("Connected")) {
                        headerStatus.style.display = 'none';
                     }
@@ -1581,60 +1601,83 @@
             } else if (text.includes("disconnected")) {
                 headerContent = `❌ Stranger Disconnected`;
                 isConnected = false;
-                setTimeout(() => { // Hide disconnected message
+                setTimeout(() => {
                     if(headerStatus.textContent.includes("Disconnected")) {
                        headerStatus.style.display = 'none';
                     }
                 }, 3000);
             } else {
-                 headerStatus.style.display = 'none'; // Hide for welcome message etc.
+                 headerStatus.style.display = 'none';
             }
 
             if(headerContent) {
-                headerStatus.textContent = headerContent;
-                headerStatus.style.display = 'block';
+                headerStatus.innerHTML = headerContent;
+                headerStatus.style.display = 'flex';
             }
 
-        // --- Handle Mobile Video Mode & All Text Modes ---
-        } else {
-            headerStatus.style.display = 'none';
-            const isInitialStatePopup = text.includes("Welcome") || text.includes("Searching");
-
-            if (isVideoEnabled && isInitialStatePopup) { // Mobile Video initial states
+        // --- Handle Mobile Video Mode ---
+        } else if (isVideoEnabled && !isDesktop) {
+            const isStatusPopup = text.includes("Searching") || text.includes("Welcome") || text.includes("Connected") || text.includes("disconnected") || text.includes("timeout");
+            if (isStatusPopup) {
                 chatDiv.style.display = 'none';
                 statusOverlay.style.display = 'flex';
+                
                 if (text.includes("Searching")) {
-                    popupContent = `<div class="popup"><div class="searching-container"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text">Searching Stranger...</div></div></div>`;
-                } else { 
-                    popupContent = `<div class="popup">Welcome to TikTalk! Click 'Start Chat' to connect.</div>`;
-                }
-                statusOverlay.innerHTML = popupContent;
-                messagesDiv.innerHTML = ''; 
-                isConnected = false;
-            } else { // Regular text mode or subsequent video mode popups
-                statusOverlay.style.display = 'none';
-                chatDiv.style.display = 'block';
-
-                if (text.includes("Searching")) {
-                    popupContent = `<div class="popup"><div class="searching-container"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text">Searching Stranger...</div></div></div>`;
+                    popupContent = searchingHTML;
                     isConnected = false;
                 } else if (text.includes("Connected")) {
-                    popupContent = `<div class="popup"><span class="connected-checkmark"></span><span>Connected! Say Hi 👋</span></div>`;
+                    popupContent = connectedHTML;
                     isConnected = true;
                     setTimeout(() => {
-                        if (isConnected && messagesDiv.innerHTML.includes("Connected")) {
-                            messagesDiv.innerHTML = '';
+                        if (isConnected) {
+                            statusOverlay.style.display = 'none';
+                            chatDiv.style.display = 'block';
                         }
                     }, 3000);
+                } else if (text.includes("disconnected")) {
+                    popupContent = disconnectedHTML;
+                    isConnected = false;
                 } else {
                     popupContent = `<div class="popup">${text}</div>`;
                     isConnected = false;
                 }
-                messagesDiv.innerHTML = popupContent;
+                statusOverlay.innerHTML = popupContent;
+                messagesDiv.innerHTML = '';
+            } else {
+                 statusOverlay.style.display = 'none';
+                 chatDiv.style.display = 'block';
+                 messagesDiv.innerHTML = `<div class="popup">${text}</div>`;
             }
+            
+        // --- Handle Text Mode (All Devices) ---
+        } else {
+            headerStatus.style.display = 'none';
+            statusOverlay.style.display = 'none';
+            chatDiv.style.display = 'block';
+
+            if (text.includes("Searching")) {
+                popupContent = searchingHTML;
+                isConnected = false;
+            } else if (text.includes("Connected")) {
+                popupContent = connectedHTML;
+                isConnected = true;
+                setTimeout(() => {
+                    if (isConnected && messagesDiv.innerHTML.includes("Connected")) {
+                        messagesDiv.innerHTML = '';
+                    }
+                }, 3000);
+            } else if (text.includes("disconnected")) {
+                 popupContent = disconnectedHTML;
+                 isConnected = false;
+            } else {
+                popupContent = `<div class="popup">${text}</div>`;
+                isConnected = false;
+            }
+            messagesDiv.innerHTML = popupContent;
         }
         
-        scrollToBottom();
+        // This was causing a double scroll, addMessage now handles scrolling
+        // scrollToBottom();
         updateInputState();
     }
 
@@ -1694,6 +1737,8 @@
         clearTimeout(footerHideTimeout);
         
         if (ws && ws.readyState === WebSocket.OPEN) {
+            // FIX 5: This line sends the mode change to the server.
+            // The server must handle the logic to match users with the same mode.
             ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
             ws.close();
         }
@@ -1748,6 +1793,8 @@
       ws.onopen = () => {
         reconnectAttempts = 0;
         updateInputState();
+        // FIX 5: This line sends the mode change to the server.
+        // The server must handle the logic to match users with the same mode.
         ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
       };
 
@@ -1756,9 +1803,7 @@
           const data = JSON.parse(event.data);
           const statusOverlay = document.getElementById("statusOverlay");
           const chatDiv = document.getElementById("chat");
-          statusOverlay.style.display = 'none';
-          chatDiv.style.display = 'block';
-
+          
           switch(data.type) {
             case "system":
               if (data.text === "waiting" && !isConnected) {
@@ -1767,11 +1812,11 @@
                 showPopup("✅ Connected! Say Hi 👋");
                  if (isVideoEnabled) {
                     clearTimeout(footerHideTimeout);
+                    // FIX 4: Changed timeout to 5 seconds
                     footerHideTimeout = setTimeout(() => {
                         footer.classList.add('hidden');
-                        // FIX 5: Hide chat when footer hides
                         document.getElementById('chat').classList.add('hidden');
-                    }, 3000);
+                    }, 5000);
                  }
               } else if (data.text === 'initiate_offer') {
                 if (isVideoEnabled) {
@@ -1797,6 +1842,16 @@
             case "message":
               typingIndicator.style.display = "none";
               addMessage(data.text, "stranger");
+              // FIX 4: Show footer/chat on new message in video mode
+              if (isVideoEnabled) {
+                  footer.classList.remove('hidden');
+                  document.getElementById('chat').classList.remove('hidden');
+                  clearTimeout(footerHideTimeout);
+                  footerHideTimeout = setTimeout(() => {
+                      footer.classList.add('hidden');
+                      document.getElementById('chat').classList.add('hidden');
+                  }, 5000);
+              }
               break;
             case "typing":
               if (isConnected) {
@@ -1890,20 +1945,19 @@
       if (isConnected && ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ type: "typing" }));
       }
+      // FIX 4: Show footer on input and reset timeout to 5 seconds
       if (isVideoEnabled && isConnected) {
         if (footer.classList.contains('hidden')) {
             footer.classList.remove('hidden');
-            // FIX 5: Show chat when footer appears on input
             document.getElementById('chat').classList.remove('hidden');
         }
         clearTimeout(footerHideTimeout);
         footerHideTimeout = setTimeout(() => {
             if(input.value.trim().length === 0) { 
                footer.classList.add('hidden');
-               // FIX 5: Hide chat when footer hides
                document.getElementById('chat').classList.add('hidden');
             }
-        }, 4000);
+        }, 5000);
       }
     });
     
@@ -1911,27 +1965,41 @@
     chatWrapper.addEventListener('click', () => {
         if (isVideoEnabled && footer.classList.contains('hidden')) {
             footer.classList.remove('hidden');
-            // FIX 5: Show chat when footer appears on click
             document.getElementById('chat').classList.remove('hidden');
             clearTimeout(footerHideTimeout);
+            // FIX 4: Changed timeout to 5 seconds
             footerHideTimeout = setTimeout(() => {
                 footer.classList.add('hidden');
-                // FIX 5: Hide chat when footer hides
                 document.getElementById('chat').classList.add('hidden');
-            }, 4000);
+            }, 5000);
         }
     });
 
-    const observer = new MutationObserver((mutations) => {
-      if (mutations.some(m => m.addedNodes.length > 0)) {
-        const lastMessage = messagesDiv.lastElementChild;
-        const isMyMessage = lastMessage && lastMessage.classList.contains('me');
-        scrollToBottom(isMyMessage);
-      }
-    });
-    observer.observe(messagesDiv, { childList: true });
+    // FIX 1: Removed MutationObserver as scroll is now handled directly
 
-    // FIX 6: Double-click to exit fullscreen on desktop
+    // FIX 6: Show footer/chat on mouse hover in desktop video mode
+    document.body.addEventListener('mousemove', (e) => {
+        const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+        if (isDesktop && isVideoEnabled && isConnected) {
+            const triggerAreaHeight = 80; // Height from bottom to trigger
+            if (window.innerHeight - e.clientY < triggerAreaHeight) {
+                if (footer.classList.contains('hidden')) {
+                    footer.classList.remove('hidden');
+                    document.getElementById('chat').classList.remove('hidden');
+                    clearTimeout(footerHideTimeout);
+                }
+            } else {
+                if (!footer.classList.contains('hidden') && input.value.trim().length === 0) {
+                    clearTimeout(footerHideTimeout);
+                    footerHideTimeout = setTimeout(() => {
+                       footer.classList.add('hidden');
+                       document.getElementById('chat').classList.add('hidden');
+                    }, 500);
+                }
+            }
+        }
+    });
+
     document.body.addEventListener('dblclick', () => {
         const isDesktop = window.matchMedia("(min-width: 768px)").matches;
         if (!isDesktop) return;
