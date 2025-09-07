@@ -50,7 +50,6 @@
       box-sizing: border-box;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       border-radius: 0 0 16px 16px;
-      /* MODIFICATION: Added transitions for smooth shrinking */
       transition: height 0.3s ease, padding 0.3s ease;
       height: 76px;
     }
@@ -67,9 +66,27 @@
       height: 60px;
       width: auto;
       display: block;
-      /* MODIFICATION: Added transition for smooth shrinking */
       transition: height 0.3s ease;
     }
+    /* FIX 4: New element for header status messages on desktop */
+    #headerStatus {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
+        font-weight: 500;
+        color: #555;
+        background: rgba(240, 240, 245, 0.8);
+        padding: 6px 14px;
+        border-radius: 16px;
+        display: none; /* Hidden by default */
+        z-index: 10004;
+    }
+    body.dark-mode #headerStatus {
+        color: #e5e7eb;
+        background: rgba(45, 55, 72, 0.8);
+    }
+
     .chat-wrapper {
       position: relative;
       flex: 1;
@@ -83,9 +100,11 @@
       bottom: 0;
       overflow-y: auto;
       overscroll-behavior: contain;
-      padding: calc(76px + 10px + env(safe-area-inset-top)) 15px calc(100px + env(safe-area-inset-bottom)); /* FINAL FIX: Adjusted bottom padding to align with footer note */
+      padding: calc(76px + 10px + env(safe-area-inset-top)) 15px calc(110px + env(safe-area-inset-bottom));
       -webkit-overflow-scrolling: touch;
       transition: all 0.3s ease;
+      scroll-padding-top: 10px;
+      scroll-padding-bottom: 10px;
     }
     #messages {
       display: flex;
@@ -364,6 +383,13 @@
       box-sizing: border-box !important;
       border-radius: 16px;
       background: transparent !important;
+    }
+    .emoji-mart button:focus,
+    .emoji-mart button:active {
+        background: transparent !important;
+        outline: none !important;
+        box-shadow: none !important;
+        border: none !important;
     }
     .emoji-mart-scroll {
       overflow-y: auto !important;
@@ -830,9 +856,6 @@
       align-items: center;
       justify-content: center;
     }
-    .auto-scroll-enabled #messages {
-      scroll-behavior: smooth;
-    }
     footer {
       display: flex;
       align-items: center;
@@ -898,6 +921,7 @@
         top: calc(44px + env(safe-area-inset-top));
     }
     
+    /* FIX 3: Mobile animations now appear over the remote video without a solid background */
     #statusOverlay { 
         display: none;
         position: absolute;
@@ -907,18 +931,21 @@
         height: 50%;
         z-index: 102;
         color: #fff;
-        text-shadow: 0 1px 4px rgba(0,0,0,0.9);
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        background: transparent; /* Ensure no background */
     }
     
     #statusOverlay .popup {
         margin: 0;
         max-width: none;
         width: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Popup itself has a semi-transparent bg */
+        border-radius: 12px;
+        padding: 12px 16px;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
-
 
     body.video-mode #chat {
       display: block; 
@@ -927,27 +954,31 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: transparent; 
+      /* FIX 1: Add a subtle gradient background to ensure text is always readable */
+      background: linear-gradient(to top, rgba(0,0,0,0.4), transparent 50%);
       z-index: 101; 
       padding-top: 0;
       padding-bottom: calc(56px + 15px + env(safe-area-inset-bottom)); 
       pointer-events: all;
       -webkit-mask-image: linear-gradient(to top, black 80%, transparent 100%);
       mask-image: linear-gradient(to top, black 80%, transparent 100%);
+      transition: opacity 0.4s ease-in-out;
     }
+    /* FIX 5: Class to hide chat with footer */
+    body.video-mode #chat.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     body.video-mode #messages {
       color: #fff;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.9); 
+      text-shadow: none; 
     }
-     body.video-mode .msg {
-      background-color: rgba(0, 0, 0, 0.55); 
-      box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    }
-    body.video-mode .me {
-        background-color: rgba(0, 80, 170, 0.7); 
-    }
+    body.video-mode .msg,
+    body.video-mode .me,
     body.video-mode .stranger {
-        background-color: rgba(50, 50, 50, 0.7); 
+      background-color: transparent !important;
+      box-shadow: none !important;
     }
     body.video-mode .popup {
         color: #f0f0f0;
@@ -977,26 +1008,29 @@
 
     /* === START: DESKTOP VIDEO MODE LAYOUT === */
     @media (min-width: 768px) {
+        /* FIX 2: Desktop video layout changes */
         body.video-mode #video-container {
-            flex-direction: row-reverse;
+            flex-direction: row; /* Remote on left, Local on right */
         }
         body.video-mode #video-container video {
             width: 50%;
             height: 100%;
         }
         
+        /* Desktop status overlay is not used, header status is used instead */
         body.video-mode #statusOverlay {
-            top: calc(44px + env(safe-area-inset-top));
-            left: 50%;
-            right: auto;
-            width: 50%;
-            height: calc(100% - 44px - env(safe-area-inset-top));
+           display: none !important;
         }
 
+        /* FIX 2: Chat positioned over local (right) video only */
         body.video-mode #chat {
             top: 0;
             bottom: 0;
-            padding-top: 50vh;
+            left: 50%;
+            right: 0;
+            width: 50%;
+            padding-top: calc(44px + 10px + env(safe-area-inset-top));
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent 70%);
         }
     }
     /* === END: DESKTOP VIDEO MODE LAYOUT === */
@@ -1029,6 +1063,8 @@
         <text x="120" y="70" font-size="56" font-family="Segoe UI, Arial, sans-serif" font-weight="800" fill="#007bff" dominant-baseline="middle" alignment-baseline="middle">TikTalk</text>
       </svg>
     </div>
+    <!-- FIX 4: New element for header status messages on desktop -->
+    <div id="headerStatus"></div>
     <div class="right">
       <button id="videoToggleBtn" class="icon-btn" title="Toggle Video Mode">
         <svg class="video-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -1373,12 +1409,18 @@
       }, 2000);
     }
 
-    function scrollToBottom() {
+    function scrollToBottom(force = false) {
       const chatDiv = document.getElementById("chat");
-       if (chatDiv.style.display === 'none') return;
-      const isNearBottom = chatDiv.scrollHeight - chatDiv.scrollTop - chatDiv.clientHeight < 100;
-      if (isNearBottom && messagesDiv.children.length > 0) {
+      if (!chatDiv || chatDiv.style.display === 'none') return;
+
+      if (force) {
         chatDiv.scrollTop = chatDiv.scrollHeight;
+        return;
+      }
+
+      const isNearBottom = chatDiv.scrollHeight - chatDiv.scrollTop - chatDiv.clientHeight < 150;
+      if (isNearBottom) {
+        chatDiv.scrollTo({ top: chatDiv.scrollHeight, behavior: 'smooth' });
       }
     }
 
@@ -1452,7 +1494,7 @@
       } else {
         footer.style.transition = 'none';
         footer.style.bottom = `calc(10px + ${safeAreaBottom}px)`;
-        if(chatDiv && !document.body.classList.contains('video-mode')) chatDiv.style.paddingBottom = `calc(100px + ${safeAreaBottom}px)`;
+        if(chatDiv && !document.body.classList.contains('video-mode')) chatDiv.style.paddingBottom = `calc(110px + ${safeAreaBottom}px)`;
         if(footerNote) footerNote.style.bottom = `calc(72px + ${safeAreaBottom}px)`;
         if(startChattingBtn) startChattingBtn.style.bottom = `calc(100px + ${safeAreaBottom}px)`;
         emojiPicker.style.bottom = isDesktop ? `calc(56px + 15px + ${safeAreaBottom}px)` : `calc(10px + ${safeAreaBottom}px)`;
@@ -1509,45 +1551,87 @@
       messagesDiv.appendChild(fragment);
     }
 
+    // FIX 4 & 3: Modified function to handle desktop header status and mobile overlay
     function showPopup(text) { 
         const statusOverlay = document.getElementById("statusOverlay");
+        const headerStatus = document.getElementById("headerStatus");
         const chatDiv = document.getElementById("chat");
-        const isInitialStatePopup = text.includes("Welcome") || text.includes("Searching");
-
+        const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+        
         let popupContent = '';
+        let headerContent = '';
 
-        if (isVideoEnabled && isInitialStatePopup) {
-            chatDiv.style.display = 'none';
-            statusOverlay.style.display = 'flex';
-
-            if (text.includes("Searching")) {
-                popupContent = `<div class="popup"><div class="searching-container"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text">Searching Stranger...</div></div></div>`;
-            } else { 
-                popupContent = `<div class="popup">Welcome to TikTalk! Click 'Start Chat' to connect with a stranger.</div>`;
-            }
-            statusOverlay.innerHTML = popupContent;
-            messagesDiv.innerHTML = ''; 
-            isConnected = false;
-        } else {
+        // --- Handle Desktop Video Mode ---
+        if (isVideoEnabled && isDesktop) {
+            messagesDiv.innerHTML = '';
             statusOverlay.style.display = 'none';
-            chatDiv.style.display = 'block';
+            chatDiv.style.display = 'block'; // Chat is always visible on desktop
 
             if (text.includes("Searching")) {
-                popupContent = `<div class="popup"><div class="searching-container"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text">Searching Stranger...</div></div></div>`;
+                headerContent = `🔍 Searching...`;
                 isConnected = false;
             } else if (text.includes("Connected")) {
-                popupContent = `<div class="popup"><span class="connected-checkmark"></span><span>Connected! Say Hi 👋</span></div>`;
+                headerContent = `✅ Connected!`;
                 isConnected = true;
-                setTimeout(() => {
-                    if (isConnected && messagesDiv.innerHTML.includes("Connected")) {
-                        messagesDiv.innerHTML = '';
+                setTimeout(() => { // Hide connected message after a few seconds
+                    if(headerStatus.textContent.includes("Connected")) {
+                       headerStatus.style.display = 'none';
+                    }
+                }, 3000);
+            } else if (text.includes("disconnected")) {
+                headerContent = `❌ Stranger Disconnected`;
+                isConnected = false;
+                setTimeout(() => { // Hide disconnected message
+                    if(headerStatus.textContent.includes("Disconnected")) {
+                       headerStatus.style.display = 'none';
                     }
                 }, 3000);
             } else {
-                popupContent = `<div class="popup">${text}</div>`;
-                isConnected = false;
+                 headerStatus.style.display = 'none'; // Hide for welcome message etc.
             }
-            messagesDiv.innerHTML = popupContent;
+
+            if(headerContent) {
+                headerStatus.textContent = headerContent;
+                headerStatus.style.display = 'block';
+            }
+
+        // --- Handle Mobile Video Mode & All Text Modes ---
+        } else {
+            headerStatus.style.display = 'none';
+            const isInitialStatePopup = text.includes("Welcome") || text.includes("Searching");
+
+            if (isVideoEnabled && isInitialStatePopup) { // Mobile Video initial states
+                chatDiv.style.display = 'none';
+                statusOverlay.style.display = 'flex';
+                if (text.includes("Searching")) {
+                    popupContent = `<div class="popup"><div class="searching-container"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text">Searching Stranger...</div></div></div>`;
+                } else { 
+                    popupContent = `<div class="popup">Welcome to TikTalk! Click 'Start Chat' to connect.</div>`;
+                }
+                statusOverlay.innerHTML = popupContent;
+                messagesDiv.innerHTML = ''; 
+                isConnected = false;
+            } else { // Regular text mode or subsequent video mode popups
+                statusOverlay.style.display = 'none';
+                chatDiv.style.display = 'block';
+
+                if (text.includes("Searching")) {
+                    popupContent = `<div class="popup"><div class="searching-container"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text">Searching Stranger...</div></div></div>`;
+                    isConnected = false;
+                } else if (text.includes("Connected")) {
+                    popupContent = `<div class="popup"><span class="connected-checkmark"></span><span>Connected! Say Hi 👋</span></div>`;
+                    isConnected = true;
+                    setTimeout(() => {
+                        if (isConnected && messagesDiv.innerHTML.includes("Connected")) {
+                            messagesDiv.innerHTML = '';
+                        }
+                    }, 3000);
+                } else {
+                    popupContent = `<div class="popup">${text}</div>`;
+                    isConnected = false;
+                }
+                messagesDiv.innerHTML = popupContent;
+            }
         }
         
         scrollToBottom();
@@ -1606,6 +1690,7 @@
         }
         
         footer.classList.remove('hidden');
+        document.getElementById('chat').classList.remove('hidden');
         clearTimeout(footerHideTimeout);
         
         if (ws && ws.readyState === WebSocket.OPEN) {
@@ -1684,6 +1769,8 @@
                     clearTimeout(footerHideTimeout);
                     footerHideTimeout = setTimeout(() => {
                         footer.classList.add('hidden');
+                        // FIX 5: Hide chat when footer hides
+                        document.getElementById('chat').classList.add('hidden');
                     }, 3000);
                  }
               } else if (data.text === 'initiate_offer') {
@@ -1699,6 +1786,7 @@
                   isConnected = false;
                   stopAllStreams(false);
                   footer.classList.remove('hidden');
+                  document.getElementById('chat').classList.remove('hidden');
                   clearTimeout(footerHideTimeout);
                 }
               } else if (data.text === "timeout") {
@@ -1753,6 +1841,7 @@
         stopAllStreams(false);
         updateInputState();
         footer.classList.remove('hidden');
+        document.getElementById('chat').classList.remove('hidden');
         clearTimeout(footerHideTimeout);
       };
 
@@ -1779,7 +1868,6 @@
         emojiPicker.style.display = 'none';
         document.getElementById("emojiToggle").textContent = "😊";
         document.getElementById("emojiToggle").setAttribute('aria-expanded', 'false');
-        wasPickerOpenBeforeKeyboard = false;
         debouncedAdjustLayout();
       }
     };
@@ -1790,6 +1878,7 @@
       e.preventDefault();
       e.stopImmediatePropagation();
       footer.classList.remove('hidden');
+      document.getElementById('chat').classList.remove('hidden');
       clearTimeout(footerHideTimeout);
       connectStranger();
       debouncedAdjustLayout();
@@ -1804,11 +1893,15 @@
       if (isVideoEnabled && isConnected) {
         if (footer.classList.contains('hidden')) {
             footer.classList.remove('hidden');
+            // FIX 5: Show chat when footer appears on input
+            document.getElementById('chat').classList.remove('hidden');
         }
         clearTimeout(footerHideTimeout);
         footerHideTimeout = setTimeout(() => {
             if(input.value.trim().length === 0) { 
                footer.classList.add('hidden');
+               // FIX 5: Hide chat when footer hides
+               document.getElementById('chat').classList.add('hidden');
             }
         }, 4000);
       }
@@ -1818,18 +1911,39 @@
     chatWrapper.addEventListener('click', () => {
         if (isVideoEnabled && footer.classList.contains('hidden')) {
             footer.classList.remove('hidden');
+            // FIX 5: Show chat when footer appears on click
+            document.getElementById('chat').classList.remove('hidden');
             clearTimeout(footerHideTimeout);
             footerHideTimeout = setTimeout(() => {
                 footer.classList.add('hidden');
+                // FIX 5: Hide chat when footer hides
+                document.getElementById('chat').classList.add('hidden');
             }, 4000);
         }
     });
 
-    document.body.classList.add('auto-scroll-enabled');
-    const observer = new MutationObserver(() => {
-      scrollToBottom();
+    const observer = new MutationObserver((mutations) => {
+      if (mutations.some(m => m.addedNodes.length > 0)) {
+        const lastMessage = messagesDiv.lastElementChild;
+        const isMyMessage = lastMessage && lastMessage.classList.contains('me');
+        scrollToBottom(isMyMessage);
+      }
     });
-    observer.observe(messagesDiv, { childList: true, subtree: true });
+    observer.observe(messagesDiv, { childList: true });
+
+    // FIX 6: Double-click to exit fullscreen on desktop
+    document.body.addEventListener('dblclick', () => {
+        const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+        if (!isDesktop) return;
+
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+    });
 
     function setInitialState() {
         startChattingBtn.style.display = 'block';
