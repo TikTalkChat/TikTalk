@@ -68,7 +68,6 @@
       display: block;
       transition: height 0.3s ease;
     }
-    /* FIX 8: Styles for header status messages on desktop */
     #headerStatus {
         position: absolute;
         left: 50%;
@@ -101,12 +100,15 @@
       bottom: 0;
       overflow-y: auto;
       overscroll-behavior: contain;
-      /* FIX 2: Adjusted padding from 110px to 100px */
-      padding: calc(76px + 10px + env(safe-area-inset-top)) 15px calc(100px + env(safe-area-inset-bottom));
+      /* === FIX 1: Aggressively increased bottom padding to 140px for more space === */
+      padding: calc(76px + 10px + env(safe-area-inset-top)) 15px calc(140px + env(safe-area-inset-bottom));
       -webkit-overflow-scrolling: touch;
       transition: all 0.3s ease;
       scroll-padding-top: 10px;
       scroll-padding-bottom: 10px;
+      /* === FIX 1: Increased mask size to 90px for a larger fade-out effect === */
+      -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 90px), transparent 100%);
+      mask-image: linear-gradient(to bottom, black calc(100% - 90px), transparent 100%);
     }
     #messages {
       display: flex;
@@ -386,17 +388,9 @@
       border-radius: 16px;
       background: transparent !important;
     }
-    /* FIX 3: Remove blue square on emoji selection */
-    .emoji-mart button {
-        -webkit-tap-highlight-color: transparent;
-    }
-    .emoji-mart button:focus,
-    .emoji-mart button:active {
-        background: transparent !important;
-        outline: none !important;
-        box-shadow: none !important;
-        border: none !important;
-    }
+    
+    /* === FIX 3: Removed useless CSS rules as they are now injected via JavaScript === */
+
     .emoji-mart-scroll {
       overflow-y: auto !important;
       height: auto !important;
@@ -927,7 +921,6 @@
         top: calc(44px + env(safe-area-inset-top));
     }
     
-    /* FIX 7: Mobile animations now appear over the remote video without a solid background */
     #statusOverlay { 
         display: none;
         position: absolute;
@@ -940,14 +933,14 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background: transparent; /* Ensure no background */
+        background: transparent;
     }
     
     #statusOverlay .popup {
         margin: 0;
         max-width: none;
         width: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Popup itself has a semi-transparent bg */
+        background-color: rgba(0, 0, 0, 0.5);
         border-radius: 12px;
         padding: 12px 16px;
         text-shadow: 0 1px 3px rgba(0,0,0,0.8);
@@ -960,7 +953,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.4), transparent 50%);
+      background: transparent;
       z-index: 101; 
       padding-top: 0;
       padding-bottom: calc(56px + 15px + env(safe-area-inset-bottom)); 
@@ -969,7 +962,6 @@
       mask-image: linear-gradient(to top, black 80%, transparent 100%);
       transition: opacity 0.4s ease-in-out;
     }
-    /* FIX 4: Class to hide chat with footer */
     body.video-mode #chat.hidden {
         opacity: 0;
         pointer-events: none;
@@ -977,19 +969,21 @@
 
     body.video-mode #messages {
       color: #fff;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+      text-shadow: none;
     }
-    /* FIX 9: Re-added semi-transparent background to messages for readability */
     body.video-mode .msg {
-      background-color: rgba(0, 0, 0, 0.55) !important;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+      background-color: rgba(31, 41, 55, 0.7) !important; /* #1f2937 at 70% opacity */
+      box-shadow: none !important;
+      color: #f3f4f6; /* A slightly off-white for better reading */
     }
     body.video-mode .me {
-      background-color: rgba(0, 80, 170, 0.7) !important;
+      background-color: rgba(37, 99, 235, 0.7) !important; /* A blue color at 70% opacity */
+      color: #fff;
     }
     body.video-mode .stranger {
-      background-color: rgba(50, 50, 50, 0.7) !important;
+       background-color: rgba(31, 41, 55, 0.7) !important;
     }
+
     body.video-mode .popup {
         color: #f0f0f0;
         text-shadow: 0 1px 3px rgba(0,0,0,0.8);
@@ -1018,9 +1012,8 @@
 
     /* === START: DESKTOP VIDEO MODE LAYOUT === */
     @media (min-width: 768px) {
-        /* FIX 10: This was already correct */
         body.video-mode #video-container {
-            flex-direction: row; /* Remote on left, Local on right */
+            flex-direction: row; 
         }
         body.video-mode #video-container video {
             width: 50%;
@@ -1031,7 +1024,6 @@
            display: none !important;
         }
 
-        /* FIX 10: This was already correct */
         body.video-mode #chat {
             top: 0;
             bottom: 0;
@@ -1039,7 +1031,10 @@
             right: 0;
             width: 50%;
             padding-top: calc(44px + 10px + env(safe-area-inset-top));
-            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent 70%);
+            background: transparent;
+            /* === FIX 1: Increased mask size for desktop video mode as well === */
+            -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 90px), transparent 100%);
+            mask-image: linear-gradient(to bottom, black calc(100% - 90px), transparent 100%);
         }
     }
     /* === END: DESKTOP VIDEO MODE LAYOUT === */
@@ -1190,6 +1185,7 @@
         navigator.virtualKeyboard.overlaysContent = true;
         navigator.virtualKeyboard.addEventListener('geometrychange', debouncedAdjustLayout);
       }
+      
       function initializeEmojiPicker() {
         const emojiPicker = document.getElementById("emojiPicker");
         const input = document.getElementById("messageInput");
@@ -1210,9 +1206,32 @@
           });
           emojiPicker.appendChild(picker);
           window._emojiPickerInstance = picker;
+
+          // === FIX 3: Inject styles directly into the Shadow DOM to remove blue square ===
+          setTimeout(() => {
+            const pickerElement = emojiPicker.querySelector('em-emoji-picker');
+            if (pickerElement && pickerElement.shadowRoot) {
+              const style = document.createElement('style');
+              style.textContent = `
+                #root button {
+                  -webkit-tap-highlight-color: transparent !important;
+                }
+                #root button:focus,
+                #root button:active,
+                #root button:focus-visible {
+                    background-color: transparent !important;
+                    outline: none !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                }
+              `;
+              pickerElement.shadowRoot.appendChild(style);
+            }
+          }, 100); // Use a small timeout to ensure the shadow DOM is ready
         }
       }
       initializeEmojiPicker();
+
       const emojiToggle = document.getElementById("emojiToggle");
       const emojiPicker = document.getElementById("emojiPicker");
       const input = document.getElementById("messageInput");
@@ -1256,6 +1275,7 @@
       input.removeEventListener("touchstart", handleInputInteraction);
       input.addEventListener("click", handleInputInteraction, { passive: true });
       input.addEventListener("touchstart", handleInputInteraction, { passive: true });
+      
       input.addEventListener("focus", () => {
         if (emojiPicker.classList.contains('show')) {
           emojiPicker.classList.remove('show');
@@ -1265,8 +1285,9 @@
           wasPickerOpenBeforeKeyboard = true;
         }
         adjustLayoutForKeyboard();
-        if (!rafId) rafId = requestAnimationFrame(updateLayout);
+        scrollToBottom(true); 
       });
+
       input.addEventListener("blur", () => {
         setTimeout(() => {
           const isStillFocused = document.activeElement === input || document.activeElement === emojiToggle;
@@ -1279,10 +1300,6 @@
           emojiPicker.style.display = 'block';
           emojiToggle.textContent = "⌨️";
           emojiToggle.setAttribute('aria-expanded', 'true');
-        }
-        if (rafId) {
-          cancelAnimationFrame(rafId);
-          rafId = null;
         }
       });
       input.addEventListener("input", debouncedAdjustLayout);
@@ -1417,19 +1434,16 @@
       }, 2000);
     }
 
-    // FIX 1: Updated scroll logic
     function scrollToBottom(force = false) {
       const chatDiv = document.getElementById("chat");
       if (!chatDiv || chatDiv.style.display === 'none') return;
 
-      if (force) {
-        chatDiv.scrollTo({ top: chatDiv.scrollHeight, behavior: 'smooth' });
-        return;
-      }
+      const isUserScrolledUp = chatDiv.scrollHeight - chatDiv.scrollTop - chatDiv.clientHeight > 150;
 
-      const isNearBottom = chatDiv.scrollHeight - chatDiv.scrollTop - chatDiv.clientHeight < 150;
-      if (isNearBottom) {
-        chatDiv.scrollTo({ top: chatDiv.scrollHeight, behavior: 'smooth' });
+      if (force || !isUserScrolledUp) {
+        requestAnimationFrame(() => {
+            chatDiv.scrollTo({ top: chatDiv.scrollHeight, behavior: 'smooth' });
+        });
       }
     }
 
@@ -1445,7 +1459,7 @@
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 5;
     let lastKeyboardHeight = parseInt(localStorage.getItem('lastKeyboardHeight')) || 350;
-    let rafId;
+    
 
     function adjustLayoutForKeyboard() {
       const header = document.querySelector("header");
@@ -1484,71 +1498,47 @@
         emojiPickerHeight = Math.min(lastKeyboardHeight, window.innerHeight * 0.7);
       }
       document.documentElement.style.setProperty('--emoji-picker-height', `${emojiPickerHeight}px`);
+      
+      let bottomOffset = 0;
 
       if (isKeyboardOpen) {
+        bottomOffset = keyboardHeight;
         footer.style.transition = 'bottom 0.3s ease';
-        footer.style.bottom = `calc(${keyboardHeight}px + ${safeAreaBottom}px + 10px)`;
-        if(chatDiv && !document.body.classList.contains('video-mode')) chatDiv.style.paddingBottom = `calc(${footer.offsetHeight}px + ${keyboardHeight}px + ${safeAreaBottom}px + 10px)`;
-        if(footerNote) footerNote.style.bottom = `calc(${footer.offsetHeight}px + ${keyboardHeight}px + ${safeAreaBottom}px + 10px)`;
-        if(startChattingBtn) startChattingBtn.style.bottom = `calc(${footer.offsetHeight}px + ${keyboardHeight}px + ${safeAreaBottom}px + 35px)`;
-      } else if (isEmojiPickerOpen) {
-        if (!isDesktop) {
-            footer.style.transition = 'bottom 0.3s ease';
-            footer.style.bottom = `calc(${emojiPickerHeight}px + ${safeAreaBottom}px + 10px)`;
-            if(chatDiv && !document.body.classList.contains('video-mode')) chatDiv.style.paddingBottom = `calc(${footer.offsetHeight}px + ${emojiPickerHeight}px + ${safeAreaBottom}px + 10px)`;
-            if(footerNote) footerNote.style.bottom = `calc(${footer.offsetHeight}px + ${emojiPickerHeight}px + ${safeAreaBottom}px + 10px)`;
-            if(startChattingBtn) startChattingBtn.style.bottom = `calc(${footer.offsetHeight}px + ${emojiPickerHeight}px + ${safeAreaBottom}px + 35px)`;
-        }
-        emojiPicker.style.bottom = isDesktop ? `calc(56px + 15px + ${safeAreaBottom}px)` : `calc(10px + ${safeAreaBottom}px)`;
+        footer.style.bottom = `calc(${keyboardHeight}px)`;
+      } else if (isEmojiPickerOpen && !isDesktop) {
+        bottomOffset = emojiPickerHeight;
+        footer.style.transition = 'bottom 0.3s ease';
+        footer.style.bottom = `calc(${emojiPickerHeight}px + ${safeAreaBottom}px + 10px)`;
+        emojiPicker.style.bottom = `calc(10px + ${safeAreaBottom}px)`;
       } else {
         footer.style.transition = 'none';
         footer.style.bottom = `calc(10px + ${safeAreaBottom}px)`;
-        // FIX 2: Adjusted padding from 110px to 100px
-        if(chatDiv && !document.body.classList.contains('video-mode')) chatDiv.style.paddingBottom = `calc(100px + ${safeAreaBottom}px)`;
-        if(footerNote) footerNote.style.bottom = `calc(72px + ${safeAreaBottom}px)`;
-        if(startChattingBtn) startChattingBtn.style.bottom = `calc(100px + ${safeAreaBottom}px)`;
         emojiPicker.style.bottom = isDesktop ? `calc(56px + 15px + ${safeAreaBottom}px)` : `calc(10px + ${safeAreaBottom}px)`;
-        footer.offsetHeight;
-        setTimeout(() => {
-          footer.style.transition = 'bottom 0.3s ease, transform 0.4s ease-in-out, opacity 0.4s ease-in-out';
-        }, 0);
       }
+      
+      const footerCurrentHeight = footer.offsetHeight || 56;
+      // === FIX 1: Increased padding calculation from 120 to 140 in JS as well ===
+      const totalPaddingBottom = bottomOffset + (isEmojiPickerOpen && !isDesktop ? footerCurrentHeight : 0) + 140;
+      
+      if(chatDiv && !document.body.classList.contains('video-mode')) {
+        chatDiv.style.paddingBottom = `calc(${totalPaddingBottom}px + ${safeAreaBottom}px)`;
+      }
+      if(footerNote) footerNote.style.bottom = `calc(${footerCurrentHeight + bottomOffset}px + ${safeAreaBottom}px + 10px)`;
+      if(startChattingBtn) startChattingBtn.style.bottom = `calc(${footerCurrentHeight + bottomOffset}px + ${safeAreaBottom}px + 35px)`;
 
       if (chatDiv && !document.body.classList.contains('video-mode')) {
         chatDiv.style.paddingTop = `calc(${headerHeight}px + 10px + ${safeAreaTop}px)`;
       }
-
-      requestAnimationFrame(() => {
-        footer.offsetHeight;
-        scrollToBottom();
-      });
+      
     }
 
     const debouncedAdjustLayout = debounce(adjustLayoutForKeyboard, 50);
-    
-    function updateLayout() {
-      adjustLayoutForKeyboard();
-      rafId = requestAnimationFrame(updateLayout);
-    }
+
     if (window.visualViewport && !('virtualKeyboard' in navigator)) {
       window.visualViewport.addEventListener("resize", debouncedAdjustLayout);
       window.visualViewport.addEventListener("scroll", debouncedAdjustLayout);
     }
-    setInterval(() => {
-      const isKeyboardOpen = document.activeElement === document.getElementById("messageInput");
-      const isEmojiPickerOpen = document.getElementById("emojiPicker").classList.contains('show');
-      let keyboardHeight = 0;
-      if ('virtualKeyboard' in navigator) {
-        keyboardHeight = navigator.virtualKeyboard.boundingRect.height;
-      } else if (window.visualViewport) {
-        const visualViewportBottom = window.visualViewport.height + window.visualViewport.offsetTop;
-        const windowBottom = window.innerHeight;
-        keyboardHeight = Math.max(0, windowBottom - visualViewportBottom);
-      }
-      if (!isKeyboardOpen && keyboardHeight === 0 && !isEmojiPickerOpen) {
-        adjustLayoutForKeyboard();
-      }
-    }, 500);
+
     window.addEventListener("resize", debouncedAdjustLayout);
     window.addEventListener("load", debouncedAdjustLayout);
 
@@ -1559,15 +1549,9 @@
       div.textContent = text;
       fragment.appendChild(div);
       messagesDiv.appendChild(div);
-      // FIX 1: Trigger scroll after adding message
-      if (who === 'me') {
-        scrollToBottom(true);
-      } else {
-        scrollToBottom();
-      }
+      scrollToBottom(who === 'me');
     }
 
-    // FIX 7 & 8: Modified function to handle all status messages
     function showPopup(text) { 
         const statusOverlay = document.getElementById("statusOverlay");
         const headerStatus = document.getElementById("headerStatus");
@@ -1581,7 +1565,6 @@
         const connectedHTML = `<div class="popup"><span class="connected-checkmark"></span><span>Connected! Say Hi 👋</span></div>`;
         const disconnectedHTML = `<div class="popup">❌ Stranger disconnected</div>`;
 
-        // --- Handle Desktop Video Mode ---
         if (isVideoEnabled && isDesktop) {
             messagesDiv.innerHTML = '';
             statusOverlay.style.display = 'none';
@@ -1614,8 +1597,6 @@
                 headerStatus.innerHTML = headerContent;
                 headerStatus.style.display = 'flex';
             }
-
-        // --- Handle Mobile Video Mode ---
         } else if (isVideoEnabled && !isDesktop) {
             const isStatusPopup = text.includes("Searching") || text.includes("Welcome") || text.includes("Connected") || text.includes("disconnected") || text.includes("timeout");
             if (isStatusPopup) {
@@ -1648,8 +1629,6 @@
                  chatDiv.style.display = 'block';
                  messagesDiv.innerHTML = `<div class="popup">${text}</div>`;
             }
-            
-        // --- Handle Text Mode (All Devices) ---
         } else {
             headerStatus.style.display = 'none';
             statusOverlay.style.display = 'none';
@@ -1676,8 +1655,6 @@
             messagesDiv.innerHTML = popupContent;
         }
         
-        // This was causing a double scroll, addMessage now handles scrolling
-        // scrollToBottom();
         updateInputState();
     }
 
@@ -1737,8 +1714,6 @@
         clearTimeout(footerHideTimeout);
         
         if (ws && ws.readyState === WebSocket.OPEN) {
-            // FIX 5: This line sends the mode change to the server.
-            // The server must handle the logic to match users with the same mode.
             ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
             ws.close();
         }
@@ -1793,8 +1768,6 @@
       ws.onopen = () => {
         reconnectAttempts = 0;
         updateInputState();
-        // FIX 5: This line sends the mode change to the server.
-        // The server must handle the logic to match users with the same mode.
         ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
       };
 
@@ -1812,7 +1785,6 @@
                 showPopup("✅ Connected! Say Hi 👋");
                  if (isVideoEnabled) {
                     clearTimeout(footerHideTimeout);
-                    // FIX 4: Changed timeout to 5 seconds
                     footerHideTimeout = setTimeout(() => {
                         footer.classList.add('hidden');
                         document.getElementById('chat').classList.add('hidden');
@@ -1842,7 +1814,6 @@
             case "message":
               typingIndicator.style.display = "none";
               addMessage(data.text, "stranger");
-              // FIX 4: Show footer/chat on new message in video mode
               if (isVideoEnabled) {
                   footer.classList.remove('hidden');
                   document.getElementById('chat').classList.remove('hidden');
@@ -1945,7 +1916,6 @@
       if (isConnected && ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ type: "typing" }));
       }
-      // FIX 4: Show footer on input and reset timeout to 5 seconds
       if (isVideoEnabled && isConnected) {
         if (footer.classList.contains('hidden')) {
             footer.classList.remove('hidden');
@@ -1967,7 +1937,6 @@
             footer.classList.remove('hidden');
             document.getElementById('chat').classList.remove('hidden');
             clearTimeout(footerHideTimeout);
-            // FIX 4: Changed timeout to 5 seconds
             footerHideTimeout = setTimeout(() => {
                 footer.classList.add('hidden');
                 document.getElementById('chat').classList.add('hidden');
@@ -1975,26 +1944,36 @@
         }
     });
 
-    // FIX 1: Removed MutationObserver as scroll is now handled directly
-
-    // FIX 6: Show footer/chat on mouse hover in desktop video mode
     document.body.addEventListener('mousemove', (e) => {
         const isDesktop = window.matchMedia("(min-width: 768px)").matches;
         if (isDesktop && isVideoEnabled && isConnected) {
-            const triggerAreaHeight = 80; // Height from bottom to trigger
-            if (window.innerHeight - e.clientY < triggerAreaHeight) {
+            const localVideoEl = document.getElementById('localVideo');
+            if (!localVideoEl) return;
+
+            const videoRect = localVideoEl.getBoundingClientRect();
+            const bottomTriggerHeight = 80; // Height from bottom of viewport to trigger
+            
+            const isOverLocalVideo = (
+                e.clientX >= videoRect.left &&
+                e.clientX <= videoRect.right &&
+                e.clientY >= videoRect.top &&
+                e.clientY <= videoRect.bottom
+            );
+            const isAtBottom = window.innerHeight - e.clientY < bottomTriggerHeight;
+
+            if (isOverLocalVideo || isAtBottom) {
                 if (footer.classList.contains('hidden')) {
                     footer.classList.remove('hidden');
                     document.getElementById('chat').classList.remove('hidden');
-                    clearTimeout(footerHideTimeout);
                 }
+                clearTimeout(footerHideTimeout);
             } else {
                 if (!footer.classList.contains('hidden') && input.value.trim().length === 0) {
                     clearTimeout(footerHideTimeout);
                     footerHideTimeout = setTimeout(() => {
                        footer.classList.add('hidden');
                        document.getElementById('chat').classList.add('hidden');
-                    }, 500);
+                    }, 500); 
                 }
             }
         }
