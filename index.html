@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TikTalk - Stranger Chat</title>
   
-  <!-- === KADAM 1: PWA APP INSTALL CODE === -->
   <meta name="theme-color" content="#0b0f15">
   <link rel="manifest" href="manifest.json">
   
@@ -1195,10 +1194,7 @@
     }
   </style>
 </head>
-<body class="dark-mode"> <!-- Dark mode by default -->
-
-  <!-- === NAYA CONTAINER: Poori Chat App ko iske andar daal dein === -->
-  <div id="chat-app-container">
+<body class="dark-mode"> <div id="chat-app-container">
     <header>
         <div class="left">
           <svg class="logo" width="auto" height="60" viewBox="0 0 420 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TikTalk animated logo">
@@ -1223,7 +1219,6 @@
         </div>
         <div id="headerStatus"></div>
         <div class="right">
-          <!-- NAYA LOGOUT BUTTON -->
           <button id="logoutBtn" class="icon-btn" title="Logout" style="display: none;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
           </button>
@@ -1300,10 +1295,8 @@
     <div id="emojiPicker" aria-hidden="true"></div>
   </div>
 
-  <!-- === NAYA SCREEN: Start Screen (Updated Design) === -->
   <div id="start-screen" class="screen active">
     <div class="auth-container">
-        <!-- Sirf emoji wala logo -->
         <svg class="logo-emoji" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="gBubble2" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -1323,12 +1316,10 @@
             </g>
         </svg>
 
-        <!-- Naya text layout -->
         <h1 class="welcome-text">Welcome to</h1>
         <h2 class="brand-text">TikTalk</h2>
         <p class="tagline-text">Stranger Chat</p>
 
-        <!-- Buttons -->
         <button id="guest-btn" class="btn">Chat as a Guest</button>
         <div class="separator">OR</div>
         <button id="show-login-btn" class="btn btn-secondary">Login / Signup with Email</button>
@@ -1336,10 +1327,8 @@
   </div>
 
 
-  <!-- === NAYA SCREEN: Auth Screen (Login/Signup) === -->
   <div id="auth-screen" class="screen">
     <div class="auth-container">
-        <!-- Login Form -->
         <div id="login-form">
             <h1>Welcome Back!</h1>
             <p>Please enter your details to login.</p>
@@ -1350,7 +1339,6 @@
             <p class="toggle-link">Don't have an account? <a href="#" id="show-signup-form-btn">Sign Up</a></p>
         </div>
 
-        <!-- Signup Form -->
         <div id="signup-form" style="display: none;">
             <h1>Create Account</h1>
             <p>Get started with your new account.</p>
@@ -1366,7 +1354,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
 
-  <!-- === NAYA SCRIPT: Firebase SDKs === -->
   <script type="module">
     // Firebase SDKs ko import karein
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -1488,7 +1475,6 @@
     }
   </script>
   
-  <!-- === AAPKA ORIGINAL SCRIPT YAHA HAI === -->
   <script>
     // =================================================================
     // ADS LOGIC - START
@@ -1948,7 +1934,6 @@
                 isConnected = false;
             } else if (text.includes("Connected")) {
                 headerContent = `✅ Connected!`;
-                isConnected = true;
                 setTimeout(() => {
                     if(headerStatus.textContent.includes("Connected")) {
                        headerStatus.style.display = 'none';
@@ -1981,7 +1966,6 @@
                     isConnected = false;
                 } else if (text.includes("Connected")) {
                     popupContent = connectedHTML;
-                    isConnected = true;
                     setTimeout(() => {
                         if (isConnected) {
                             statusOverlay.style.display = 'none';
@@ -2012,7 +1996,6 @@
                 isConnected = false;
             } else if (text.includes("Connected")) {
                 popupContent = connectedHTML;
-                isConnected = true;
                 setTimeout(() => {
                     if (isConnected && messagesDiv.innerHTML.includes("Connected")) {
                         messagesDiv.innerHTML = '';
@@ -2133,7 +2116,6 @@
         window.ws.close();
       }
       stopAllStreams(false); 
-      messagesDiv.innerHTML = ''; 
       showPopup("🔍 Searching Stranger...");
       typingIndicator.style.display = "none";
       window.ws = new WebSocket(wsUrl);
@@ -2247,6 +2229,7 @@
 
       window.ws.onerror = (err) => {
         console.error("WebSocket error:", err);
+        showPopup("❌ Error: Could not connect to the server.");
         window.ws.close();
       };
     }
@@ -2385,7 +2368,6 @@
     // setInitialState() ko ab Firebase logic call karega.
   </script>
 
-  <!-- === KADAM 1: PWA APP INSTALL SCRIPT === -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
