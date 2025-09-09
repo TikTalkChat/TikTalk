@@ -5,16 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TikTalk - Stranger Chat</title>
   
-  <!-- === PWA CODE START === -->
-  <!-- Browser UI (address bar) ka color set karta hai -->
-  <meta name="theme-color" content="#10161d">
-  <!-- PWA manifest file ko link karta hai -->
+  <!-- === KADAM 1: PWA APP INSTALL CODE === -->
+  <meta name="theme-color" content="#0b0f15">
   <link rel="manifest" href="manifest.json">
-  <!-- === PWA CODE END === -->
-
+  
   <meta name="monetag" content="b98558b06dec2f7a5ea0903805e7f8c8">
   <style>
-    /* === ESTILOS ORIGINALES (WITH EMOJI PICKER HEIGHT CHANGES) === */
+    /* === KADAM 2: LOGIN SYSTEM KE LIYE NAYE STYLES === */
+    .screen {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 1rem;
+      background: #fff;
+    }
+    body.dark-mode .screen { background: #0b0f15; }
+    
+    .screen.active {
+      display: flex;
+    }
+    #chat-app-container {
+      display: none; /* Chat interface shuruaat mein chhipa rahega */
+      width: 100%;
+      height: 100%;
+    }
+    #chat-app-container.active {
+      display: block;
+    }
+
+    /* === Aapke Original Styles Yahan se Shuru Hote Hain === */
     * {
       margin: 0;
       padding: 0;
@@ -109,13 +134,11 @@
       bottom: 0;
       overflow-y: auto;
       overscroll-behavior: contain;
-      /* === FIX 1: Aggressively increased bottom padding to 140px for more space === */
       padding: calc(76px + 10px + env(safe-area-inset-top)) 15px calc(140px + env(safe-area-inset-bottom));
       -webkit-overflow-scrolling: touch;
       transition: all 0.3s ease;
       scroll-padding-top: 10px;
       scroll-padding-bottom: 10px;
-      /* === FIX 1: Increased mask size to 90px for a larger fade-out effect === */
       -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 90px), transparent 100%);
       mask-image: linear-gradient(to bottom, black calc(100% - 90px), transparent 100%);
     }
@@ -313,7 +336,7 @@
       background: transparent !important;
       box-shadow: none !important;
     }
-    button {
+    button, .btn { /* Naya class: .btn */
       padding: 0 14px;
       border: none;
       border-radius: 20px;
@@ -330,7 +353,7 @@
       z-index: 10001;
       touch-action: manipulation;
     }
-    button:active {
+    button:active, .btn:active {
       opacity: 0.85;
     }
     .footer-buttons {
@@ -398,8 +421,6 @@
       background: transparent !important;
     }
     
-    /* === FIX 3: Removed useless CSS rules as they are now injected via JavaScript === */
-
     .emoji-mart-scroll {
       overflow-y: auto !important;
       height: auto !important;
@@ -888,7 +909,6 @@
       background: #555;
     }
 
-    /* === START: NEW VIDEO MODE STYLES === */
     #video-container {
       display: none;
       flex-direction: column;
@@ -981,12 +1001,12 @@
       text-shadow: none;
     }
     body.video-mode .msg {
-      background-color: rgba(31, 41, 55, 0.7) !important; /* #1f2937 at 70% opacity */
+      background-color: rgba(31, 41, 55, 0.7) !important; 
       box-shadow: none !important;
-      color: #f3f4f6; /* A slightly off-white for better reading */
+      color: #f3f4f6; 
     }
     body.video-mode .me {
-      background-color: rgba(37, 99, 235, 0.7) !important; /* A blue color at 70% opacity */
+      background-color: rgba(37, 99, 235, 0.7) !important; 
       color: #fff;
     }
     body.video-mode .stranger {
@@ -1009,7 +1029,6 @@
         opacity: 0;
         pointer-events: none;
     }
-    /* === END: NEW VIDEO MODE STYLES === */
     
     #videoToggleBtn.active {
        filter: drop-shadow(0 0 4px #007bff);
@@ -1019,7 +1038,6 @@
       cursor: not-allowed;
     }
 
-    /* === START: DESKTOP VIDEO MODE LAYOUT === */
     @media (min-width: 768px) {
         body.video-mode #video-container {
             flex-direction: row; 
@@ -1041,132 +1059,446 @@
             width: 50%;
             padding-top: calc(44px + 10px + env(safe-area-inset-top));
             background: transparent;
-            /* === FIX 1: Increased mask size for desktop video mode as well === */
             -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 90px), transparent 100%);
             mask-image: linear-gradient(to bottom, black calc(100% - 90px), transparent 100%);
         }
     }
-    /* === END: DESKTOP VIDEO MODE LAYOUT === */
+
+    /* === LOGIN SYSTEM KE LIYE STYLES === */
+    .auth-container {
+      width: 100%;
+      max-width: 380px;
+      background: #fff;
+      padding: 2.5rem 2rem;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      text-align: center;
+      color: #0f172a;
+    }
+    body.dark-mode .auth-container {
+        background: #10161d;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        color: #e5e7eb;
+    }
+    
+    .welcome-text {
+        font-size: 2.5rem;
+        font-weight: 300;
+        line-height: 1.2;
+    }
+    body:not(.dark-mode) .welcome-text { color: #555; }
+    body.dark-mode .welcome-text { color: #a0aec0; }
+
+    .brand-text {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #007bff;
+        margin: -10px 0 5px 0;
+    }
+    .tagline-text {
+        font-size: 1rem;
+        margin-bottom: 2.5rem !important;
+    }
+    body:not(.dark-mode) .tagline-text { color: #555; }
+    body.dark-mode .tagline-text { color: #a0aec0; }
+    
+    #start-screen .logo-emoji {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 1.5rem;
+    }
+
+    #login-form h1, #signup-form h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+    #login-form p, #signup-form p {
+        color: #555;
+        margin-bottom: 2rem;
+    }
+    body.dark-mode #login-form p, body.dark-mode #signup-form p {
+        color: #a0aec0;
+    }
+    .auth-container .input-group {
+        margin-bottom: 1rem;
+        text-align: left;
+    }
+    .auth-container input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        font-size: 1rem;
+        background: #f9f9f9;
+        transition: all 0.2s;
+        color: #0f172a;
+    }
+    body.dark-mode .auth-container input {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e5e7eb;
+    }
+    .auth-container input:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+    }
+    .auth-container .btn {
+        width: 100%;
+        padding: 16px;
+        font-size: 1rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+    }
+    .auth-container .btn-secondary {
+        background: #e9ecef;
+        color: #0f172a;
+    }
+    body.dark-mode .auth-container .btn-secondary {
+        background: #2d3748;
+        color: #e5e7eb;
+    }
+    .auth-container .separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #aaa;
+        margin: 1.5rem 0;
+    }
+    .auth-container .separator::before,
+    .auth-container .separator::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #eee;
+    }
+    body.dark-mode .auth-container .separator { color: #555; }
+    body.dark-mode .auth-container .separator::before,
+    body.dark-mode .auth-container .separator::after { border-color: #333; }
+    .auth-container .separator:not(:empty)::before { margin-right: .25em; }
+    .auth-container .separator:not(:empty)::after { margin-left: .25em; }
+
+    .auth-container .toggle-link {
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+    }
+    .auth-container .toggle-link a {
+        color: #007bff;
+        font-weight: bold;
+        text-decoration: none;
+    }
+    #auth-error, #auth-error-signup {
+        color: #e53e3e;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        min-height: 1.25rem;
+    }
   </style>
 </head>
-<body>
-  <header>
-    <div class="left">
-      <svg class="logo" width="auto" height="60" viewBox="0 0 420 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TikTalk animated logo">
-        <defs>
-          <linearGradient id="gBubble" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#00eaff">
-              <animate attributeName="stop-color" dur="6s" values="#00eaff;#007bff;#6a00ff;#00eaff" repeatCount="indefinite"/>
-            </stop>
-            <stop offset="100%" stop-color="#007bff">
-              <animate attributeName="stop-color" dur="6s" values="#007bff;#6a00ff;#00eaff;#007bff" repeatCount="indefinite"/>
-            </stop>
-          </linearGradient>
-          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="6" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <g transform="translate(60,70) scale(1.2)">
-          <circle cx="0" cy="0" r="45" fill="url(#gBubble)"/>
-          <ellipse class="eye left" cx="-12" cy="-9" rx="4.5" ry="7" fill="#fff"/>
-          <path class="right" d="M 8 -9 Q 12 -13 16 -9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-          <path class="smile" d="M -10 10 Q 0 18 10 10" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/>
-        </g>
-        <text x="120" y="70" font-size="56" font-family="Segoe UI, Arial, sans-serif" font-weight="800" fill="#007bff" dominant-baseline="middle" alignment-baseline="middle">TikTalk</text>
-      </svg>
-    </div>
-    <div id="headerStatus"></div>
-    <div class="right">
-      <button id="videoToggleBtn" class="icon-btn" title="Toggle Video Mode">
-        <svg class="video-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
-        </svg>
-        <svg class="chat-icon" style="display: none;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-        </svg>
-      </button>
-      <button id="themeToggle" class="icon-btn">🌙</button>
-      <div style="position: relative;">
-        <button id="shareBtn" class="share-btn">
-          <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-            <path d="M18 8l-8 8-8-8"/>
-            <animate attributeName="stroke" values="#007bff;#00eaff;#6a00ff;#007bff" dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="transform" values="scale(1);scale(1.1);scale(1)" dur="1.5s" repeatCount="indefinite"/>
+<body class="dark-mode"> <!-- Dark mode by default -->
+
+  <!-- === NAYA CONTAINER: Poori Chat App ko iske andar daal dein === -->
+  <div id="chat-app-container">
+    <header>
+        <div class="left">
+          <svg class="logo" width="auto" height="60" viewBox="0 0 420 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TikTalk animated logo">
+            <defs>
+              <linearGradient id="gBubble" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00eaff">
+                  <animate attributeName="stop-color" dur="6s" values="#00eaff;#007bff;#6a00ff;#00eaff" repeatCount="indefinite"/>
+                </stop>
+                <stop offset="100%" stop-color="#007bff">
+                  <animate attributeName="stop-color" dur="6s" values="#007bff;#6a00ff;#00eaff;#007bff" repeatCount="indefinite"/>
+                </stop>
+              </linearGradient>
+            </defs>
+            <g transform="translate(60,70) scale(1.2)">
+              <circle cx="0" cy="0" r="45" fill="url(#gBubble)"/>
+              <ellipse class="eye left" cx="-12" cy="-9" rx="4.5" ry="7" fill="#fff"/>
+              <path class="right" d="M 8 -9 Q 12 -13 16 -9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <path class="smile" d="M -10 10 Q 0 18 10 10" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </g>
+            <text x="120" y="70" font-size="56" font-family="Segoe UI, Arial, sans-serif" font-weight="800" fill="#007bff" dominant-baseline="middle" alignment-baseline="middle">TikTalk</text>
           </svg>
-        </button>
-        <div class="share-animation"></div>
-      </div>
-      <div class="share-sheet" id="shareSheet">
-        <button onclick="shareApp('whatsapp')"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></button>
-        <button onclick="shareApp('instagram')"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram"></button>
-        <button onclick="shareApp('facebook')"><img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook"></button>
-        <button onclick="shareApp('x')" aria-label="Share on X">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="20" height="20">
-            <circle cx="50" cy="50" r="50" fill="#1DA1F2"/>
-            <path d="M30,30 L70,70 M70,30 L30,70" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
-          </svg>
-        </button>
-        <button class="link" onclick="shareApp('link')">🔗</button>
-      </div>
-    </div>
-  </header>
-  <div class="chat-wrapper">
-    <div id="video-container">
-        <video id="remoteVideo" playsinline autoplay></video>
-        <video id="localVideo" playsinline autoplay muted></video>
-    </div>
-    <div id="statusOverlay"></div>
-    <main id="chat">
-      <div id="messages"></div>
-      <div id="typingIndicator" style="display:none;">
-        <div class="typing-container">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
         </div>
-      </div>
-    </main>
+        <div id="headerStatus"></div>
+        <div class="right">
+          <!-- NAYA LOGOUT BUTTON -->
+          <button id="logoutBtn" class="icon-btn" title="Logout" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </button>
+          <button id="videoToggleBtn" class="icon-btn" title="Toggle Video Mode">
+            <svg class="video-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+            </svg>
+            <svg class="chat-icon" style="display: none;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            </svg>
+          </button>
+          <button id="themeToggle" class="icon-btn">🌙</button>
+          <div style="position: relative;">
+            <button id="shareBtn" class="share-btn">
+              <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <path d="M18 8l-8 8-8-8"/>
+                <animate attributeName="stroke" values="#007bff;#00eaff;#6a00ff;#007bff" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="transform" values="scale(1);scale(1.1);scale(1)" dur="1.5s" repeatCount="indefinite"/>
+              </svg>
+            </button>
+            <div class="share-animation"></div>
+          </div>
+          <div class="share-sheet" id="shareSheet">
+            <button onclick="shareApp('whatsapp')"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></button>
+            <button onclick="shareApp('instagram')"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram"></button>
+            <button onclick="shareApp('facebook')"><img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook"></button>
+            <button onclick="shareApp('x')" aria-label="Share on X">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="20" height="20">
+                <circle cx="50" cy="50" r="50" fill="#1DA1F2"/>
+                <path d="M30,30 L70,70 M70,30 L30,70" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button class="link" onclick="shareApp('link')">🔗</button>
+          </div>
+        </div>
+    </header>
+    <div class="chat-wrapper">
+        <div id="video-container">
+            <video id="remoteVideo" playsinline autoplay></video>
+            <video id="localVideo" playsinline autoplay muted></video>
+        </div>
+        <div id="statusOverlay"></div>
+        <main id="chat">
+          <div id="messages"></div>
+          <div id="typingIndicator" style="display:none;">
+            <div class="typing-container">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+          </div>
+        </main>
+    </div>
+    <button id="startChattingBtn" class="start-chatting-btn">Start Chat</button>
+    <p class="footerNote">Made in India <span class="heart">♥️</span></p>
+    <footer>
+        <button id="emojiToggle" aria-label="Toggle emoji picker" aria-expanded="false">😊</button>
+        <div class="inputWrapper">
+          <textarea id="messageInput" placeholder="Type a message..."></textarea>
+        </div>
+        <div class="footer-buttons">
+          <button id="nextBtn" title="Next" disabled>
+            <svg class="button-icon" viewBox="0 0 24 24" fill="white">
+              <path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </svg>
+          </button>
+          <button id="sendBtn" title="Send">
+            <svg class="button-icon" viewBox="0 0 24 24" fill="white">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </div>
+    </footer>
+    <div id="emojiPicker" aria-hidden="true"></div>
   </div>
-  <button id="startChattingBtn" class="start-chatting-btn">Start Chat</button>
-  <p class="footerNote">Made in India <span class="heart">♥️</span></p>
-  <footer>
-    <button id="emojiToggle" aria-label="Toggle emoji picker" aria-expanded="false">😊</button>
-    <div class="inputWrapper">
-      <textarea id="messageInput" placeholder="Type a message..."></textarea>
-    </div>
-    <div class="footer-buttons">
-      <button id="nextBtn" title="Next" disabled>
-        <svg class="button-icon" viewBox="0 0 24 24" fill="white">
-          <path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+
+  <!-- === NAYA SCREEN: Start Screen (Updated Design) === -->
+  <div id="start-screen" class="screen active">
+    <div class="auth-container">
+        <!-- Sirf emoji wala logo -->
+        <svg class="logo-emoji" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="gBubble2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00eaff">
+                  <animate attributeName="stop-color" dur="6s" values="#00eaff;#007bff;#6a00ff;#00eaff" repeatCount="indefinite"></animate>
+                </stop>
+                <stop offset="100%" stop-color="#007bff">
+                  <animate attributeName="stop-color" dur="6s" values="#007bff;#6a00ff;#00eaff;#007bff" repeatCount="indefinite"></animate>
+                </stop>
+              </linearGradient>
+            </defs>
+            <g transform="translate(50,50) scale(1.1)">
+              <circle cx="0" cy="0" r="45" fill="url(#gBubble2)"></circle>
+              <ellipse class="eye left" cx="-12" cy="-9" rx="4.5" ry="7" fill="#fff"></ellipse>
+              <path class="right" d="M 8 -9 Q 12 -13 16 -9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"></path>
+              <path class="smile" d="M -10 10 Q 0 18 10 10" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"></path>
+            </g>
         </svg>
-      </button>
-      <button id="sendBtn" title="Send">
-        <svg class="button-icon" viewBox="0 0 24 24" fill="white">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-        </svg>
-      </button>
+
+        <!-- Naya text layout -->
+        <h1 class="welcome-text">Welcome to</h1>
+        <h2 class="brand-text">TikTalk</h2>
+        <p class="tagline-text">Stranger Chat</p>
+
+        <!-- Buttons -->
+        <button id="guest-btn" class="btn">Chat as a Guest</button>
+        <div class="separator">OR</div>
+        <button id="show-login-btn" class="btn btn-secondary">Login / Signup with Email</button>
     </div>
-  </footer>
-  <div id="emojiPicker" aria-hidden="true"></div>
+  </div>
+
+
+  <!-- === NAYA SCREEN: Auth Screen (Login/Signup) === -->
+  <div id="auth-screen" class="screen">
+    <div class="auth-container">
+        <!-- Login Form -->
+        <div id="login-form">
+            <h1>Welcome Back!</h1>
+            <p>Please enter your details to login.</p>
+            <div class="input-group"><input type="email" id="login-email" placeholder="Email Address" autocomplete="email"></div>
+            <div class="input-group"><input type="password" id="login-password" placeholder="Password" autocomplete="current-password"></div>
+            <button id="login-btn" class="btn">Login</button>
+            <p id="auth-error" class="auth-error-message"></p>
+            <p class="toggle-link">Don't have an account? <a href="#" id="show-signup-form-btn">Sign Up</a></p>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form" style="display: none;">
+            <h1>Create Account</h1>
+            <p>Get started with your new account.</p>
+            <div class="input-group"><input type="email" id="signup-email" placeholder="Email Address" autocomplete="email"></div>
+            <div class="input-group"><input type="password" id="signup-password" placeholder="Create Password" autocomplete="new-password"></div>
+            <button id="signup-btn" class="btn">Sign Up</button>
+            <p id="auth-error-signup" class="auth-error-message"></p>
+            <p class="toggle-link">Already have an account? <a href="#" id="show-login-form-btn">Login</a></p>
+        </div>
+    </div>
+  </div>
+
+
   <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+
+  <!-- === NAYA SCRIPT: Firebase SDKs === -->
+  <script type="module">
+    // Firebase SDKs ko import karein
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signInAnonymously,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // ***************************************************************
+    // IMPORTANT: Apni Firebase project ki configuration yahan daalein
+    // ***************************************************************
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Firebase ko initialize karein
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    window.auth = auth; // Make auth globally available for the other script
+
+    // === NAYA CODE: AUTHENTICATION LOGIC ===
+
+    // UI Elements
+    const startScreen = document.getElementById('start-screen');
+    const authScreen = document.getElementById('auth-screen');
+    const chatAppContainer = document.getElementById('chat-app-container');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const startChattingBtn = document.getElementById("startChattingBtn");
+
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+
+    // Function to switch between screens
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+      if (screenId) {
+        document.getElementById(screenId).classList.add('active');
+      }
+    }
+
+    // Check user's login state
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        showScreen(null); 
+        chatAppContainer.classList.add('active');
+        logoutBtn.style.display = user.isAnonymous ? 'none' : 'flex';
+        // Chat app ko shuru karo
+        if (typeof setInitialState === 'function') {
+            setInitialState();
+        }
+      } else {
+        if (window.ws) window.ws.close();
+        chatAppContainer.classList.remove('active');
+        showScreen('start-screen');
+      }
+    });
+
+    // Event Listeners for buttons
+    document.getElementById('guest-btn').addEventListener('click', () => {
+      signInAnonymously(auth).catch(handleAuthError);
+    });
+
+    document.getElementById('show-login-btn').addEventListener('click', () => {
+      showScreen('auth-screen');
+      signupForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      document.getElementById('auth-error').textContent = '';
+      document.getElementById('auth-error-signup').textContent = '';
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth);
+    });
+
+    // Form toggling
+    document.getElementById('show-signup-form-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.style.display = 'none';
+      signupForm.style.display = 'block';
+       document.getElementById('auth-error').textContent = '';
+    });
+    document.getElementById('show-login-form-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      signupForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      document.getElementById('auth-error-signup').textContent = '';
+    });
+
+    // Login and Signup logic
+    document.getElementById('login-btn').addEventListener('click', () => {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      signInWithEmailAndPassword(auth, email, password).catch(handleAuthError);
+    });
+
+    document.getElementById('signup-btn').addEventListener('click', () => {
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      createUserWithEmailAndPassword(auth, email, password).catch(handleAuthError);
+    });
+
+    function handleAuthError(error) {
+      const errorMessage = error.message.replace('Firebase: ', '').replace('auth/', '').replace(/-/g, ' ');
+      if (signupForm.style.display === 'block') {
+        document.getElementById('auth-error-signup').textContent = errorMessage;
+      } else {
+        document.getElementById('auth-error').textContent = errorMessage;
+      }
+    }
+  </script>
+  
+  <!-- === AAPKA ORIGINAL SCRIPT YAHA HAI === -->
   <script>
     // =================================================================
     // ADS LOGIC - START
     // =================================================================
-
-    // Last ad kab dikhaya gaya tha, uska time store karega
     let lastAdTime = 0;
-    // 8 minute ka time milliseconds mein
     const adCooldown = 8 * 60 * 1000; 
-    // Yeh check karega ki 'Next' button session mein pehli baar daba hai ya nahi
     let isFirstNextClickInSession = true;
 
     function showMonetagAd() {
-      // Monetag Vignette Ad Code - Pasted from user
       console.log("AD TRIGGERED: Monetag ad code is running.");
       try {
-        // This is a direct JavaScript implementation of the user's script tag.
         (function(s){
             s.dataset.zone='9843448';
             s.src='https://groleegni.net/vignette.min.js';
@@ -1175,11 +1507,9 @@
           console.error("Error executing Monetag ad code:", error);
       }
     }
-
     // =================================================================
     // ADS LOGIC - END
     // =================================================================
-
 
     let localStream;
     let peerConnection;
@@ -1245,8 +1575,6 @@
           });
           emojiPicker.appendChild(picker);
           window._emojiPickerInstance = picker;
-
-          // === FIX 3: Inject styles directly into the Shadow DOM to remove blue square ===
           setTimeout(() => {
             const pickerElement = emojiPicker.querySelector('em-emoji-picker');
             if (pickerElement && pickerElement.shadowRoot) {
@@ -1266,7 +1594,7 @@
               `;
               pickerElement.shadowRoot.appendChild(style);
             }
-          }, 100); // Use a small timeout to ensure the shadow DOM is ready
+          }, 100); 
         }
       }
       initializeEmojiPicker();
@@ -1429,14 +1757,11 @@
       e.preventDefault();
       e.stopImmediatePropagation();
 
-      // Start button dabane par ad dikhaye
       showMonetagAd();
-      // Ad ka time note karein
       lastAdTime = new Date().getTime(); 
-      // Agle 'Next' button ke logic ke liye isse reset karein
       isFirstNextClickInSession = true; 
 
-      if (ws) ws.close();
+      if (window.ws) window.ws.close();
       hasStartedChat = true;
       startChattingBtn.style.display = 'none';
       nextBtn.disabled = false;
@@ -1501,7 +1826,8 @@
     const typingIndicator = document.getElementById("typingIndicator");
     const footer = document.querySelector("footer");
     const emojiPicker = document.getElementById("emojiPicker");
-    let ws, typingTimeout;
+    window.ws = null;
+    let typingTimeout;
     let isConnected = false;
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 5;
@@ -1564,7 +1890,6 @@
       }
       
       const footerCurrentHeight = footer.offsetHeight || 56;
-      // === FIX 1: Increased padding calculation from 120 to 140 in JS as well ===
       const totalPaddingBottom = bottomOffset + (isEmojiPickerOpen && !isDesktop ? footerCurrentHeight : 0) + 140;
       
       if(chatDiv && !document.body.classList.contains('video-mode')) {
@@ -1760,9 +2085,9 @@
         document.getElementById('chat').classList.remove('hidden');
         clearTimeout(footerHideTimeout);
         
-        if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
-            ws.close();
+        if (window.ws && window.ws.readyState === WebSocket.OPEN) {
+            window.ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
+            window.ws.close();
         }
         adjustLayoutForKeyboard();
     });
@@ -1786,8 +2111,8 @@
         }
         peerConnection = new RTCPeerConnection(stunServers);
         peerConnection.onicecandidate = event => {
-            if (event.candidate && ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ type: 'candidate', candidate: event.candidate }));
+            if (event.candidate && window.ws && window.ws.readyState === WebSocket.OPEN) {
+                window.ws.send(JSON.stringify({ type: 'candidate', candidate: event.candidate }));
             }
         };
         peerConnection.ontrack = event => {
@@ -1803,22 +2128,22 @@
     }
 
     function connectStranger() {
-      if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
-        ws.close();
+      if (window.ws && (window.ws.readyState === WebSocket.OPEN || window.ws.readyState === WebSocket.CONNECTING)) {
+        window.ws.close();
       }
       stopAllStreams(false); 
       messagesDiv.innerHTML = ''; 
       showPopup("🔍 Searching Stranger...");
       typingIndicator.style.display = "none";
-      ws = new WebSocket(wsUrl);
+      window.ws = new WebSocket(wsUrl);
 
-      ws.onopen = () => {
+      window.ws.onopen = () => {
         reconnectAttempts = 0;
         updateInputState();
-        ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
+        window.ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
       };
 
-      ws.onmessage = async (event) => {
+      window.ws.onmessage = async (event) => {
         try {
           const data = JSON.parse(event.data);
           const statusOverlay = document.getElementById("statusOverlay");
@@ -1829,6 +2154,7 @@
               if (data.text === "waiting" && !isConnected) {
                 showPopup("🔍 Searching Stranger...");
               } else if (data.text === "connected") {
+                isConnected = true;
                 showPopup("✅ Connected! Say Hi 👋");
                  if (isVideoEnabled) {
                     clearTimeout(footerHideTimeout);
@@ -1842,7 +2168,7 @@
                     if(!peerConnection) createPeerConnection();
                     const offer = await peerConnection.createOffer();
                     await peerConnection.setLocalDescription(offer);
-                    ws.send(JSON.stringify({ type: 'offer', offer: offer }));
+                    window.ws.send(JSON.stringify({ type: 'offer', offer: offer }));
                 }
               } else if (data.text === "disconnected") {
                 if(isConnected) {
@@ -1886,7 +2212,7 @@
                     await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
                     const answer = await peerConnection.createAnswer();
                     await peerConnection.setLocalDescription(answer);
-                    ws.send(JSON.stringify({ type: 'answer', answer: answer }));
+                    window.ws.send(JSON.stringify({ type: 'answer', answer: answer }));
                 }
                 break;
             case 'answer':
@@ -1905,7 +2231,7 @@
         }
       };
 
-      ws.onclose = () => {
+      window.ws.onclose = () => {
         if (isConnected) {
           showPopup("❌ Stranger disconnected");
         }
@@ -1918,9 +2244,9 @@
         clearTimeout(footerHideTimeout);
       };
 
-      ws.onerror = (err) => {
+      window.ws.onerror = (err) => {
         console.error("WebSocket error:", err);
-        ws.close();
+        window.ws.close();
       };
     }
     
@@ -1930,7 +2256,7 @@
         e.stopImmediatePropagation();
       }
       if (isConnected && input.value.trim()) {
-        ws.send(JSON.stringify({ type: "message", text: input.value }));
+        window.ws.send(JSON.stringify({ type: "message", text: input.value }));
         addMessage(input.value, "me");
         input.value = "";
         
@@ -1952,13 +2278,10 @@
       e.stopImmediatePropagation();
       
       const now = new Date().getTime();
-
-      // Condition 1: Agar session ka pehla 'Next' click hai
-      // Condition 2: Ya phir last ad se 8 minute ho gaye hain
       if (isFirstNextClickInSession || (now - lastAdTime > adCooldown)) {
         showMonetagAd();
-        lastAdTime = now; // ad ka time update karein
-        isFirstNextClickInSession = false; // ab yeh pehla click nahi raha
+        lastAdTime = now; 
+        isFirstNextClickInSession = false; 
       }
 
       footer.classList.remove('hidden');
@@ -1971,8 +2294,8 @@
     nextBtn.addEventListener("touchstart", handleNext, { passive: false });
 
     input.addEventListener("input", () => {
-      if (isConnected && ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: "typing" }));
+      if (isConnected && window.ws && window.ws.readyState === WebSocket.OPEN) {
+        window.ws.send(JSON.stringify({ type: "typing" }));
       }
       if (isVideoEnabled && isConnected) {
         if (footer.classList.contains('hidden')) {
@@ -2009,7 +2332,7 @@
             if (!localVideoEl) return;
 
             const videoRect = localVideoEl.getBoundingClientRect();
-            const bottomTriggerHeight = 80; // Height from bottom of viewport to trigger
+            const bottomTriggerHeight = 80; 
             
             const isOverLocalVideo = (
                 e.clientX >= videoRect.left &&
@@ -2058,12 +2381,11 @@
         showPopup("Welcome to TikTalk! Click 'Start Chat' to connect with a stranger.");
         updateInputState();
     }
-    setInitialState();
+    // setInitialState() ko ab Firebase logic call karega.
   </script>
 
-  <!-- === PWA CODE START === -->
+  <!-- === KADAM 1: PWA APP INSTALL SCRIPT === -->
   <script>
-    // Service Worker ko register karne ka code
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then(registration => {
@@ -2074,7 +2396,5 @@
       });
     }
   </script>
-  <!-- === PWA CODE END === -->
-
 </body>
 </html>
