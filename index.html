@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TikTalk - Stranger Chat</title>
   
-  <meta name="theme-color" content="#0b0f15">
+  <!-- === PWA CODE START (MERGED) === -->
+  <meta name="theme-color" content="#10161d">
   <link rel="manifest" href="manifest.json">
+  <!-- === PWA CODE END === -->
+
   <meta name="monetag" content="b98558b06dec2f7a5ea0903805e7f8c8">
   <style>
-    /* === LOGIN SYSTEM STYLES START === */
+    /* === LOGIN SYSTEM STYLES START (MERGED) === */
     .screen {
       display: none;
       width: 100%;
@@ -29,7 +32,7 @@
       display: flex;
     }
     #chat-app-container {
-      display: none; /* Chat interface shuruaat mein chhipa rahega */
+      display: none;
       width: 100%;
       height: 100%;
     }
@@ -161,7 +164,7 @@
     }
     /* === LOGIN SYSTEM STYLES END === */
     
-    /* === ESTILOS ORIGINALES (WITH EMOJI PICKER HEIGHT CHANGES) === */
+    /* === YOUR ORIGINAL CSS START === */
     * {
       margin: 0;
       padding: 0;
@@ -234,7 +237,7 @@
         background: rgba(240, 240, 245, 0.8);
         padding: 6px 14px;
         border-radius: 16px;
-        display: none; /* Hidden by default */
+        display: none;
         z-index: 10004;
         align-items: center;
     }
@@ -242,7 +245,6 @@
         color: #e5e7eb;
         background: rgba(45, 55, 72, 0.8);
     }
-
     .chat-wrapper {
       position: relative;
       flex: 1;
@@ -1007,11 +1009,6 @@
       align-items: center;
       justify-content: center;
     }
-    footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
     .inputWrapper {
       border: none !important;
       box-shadow: none !important;
@@ -1029,8 +1026,6 @@
     body.dark-mode textarea::-webkit-scrollbar-thumb {
       background: #555;
     }
-
-    /* === START: NEW VIDEO MODE STYLES === */
     #video-container {
       display: none;
       flex-direction: column;
@@ -1058,7 +1053,6 @@
     #remoteVideo {
         transform: scaleX(-1);
     }
-    
     body.video-mode header {
         height: 44px;
         padding-top: 4px;
@@ -1067,11 +1061,9 @@
     body.video-mode header svg.logo {
         height: 36px;
     }
-
     body.video-mode #video-container {
         top: calc(44px + env(safe-area-inset-top));
     }
-    
     #statusOverlay { 
         display: none;
         position: absolute;
@@ -1086,7 +1078,6 @@
         align-items: center;
         background: transparent;
     }
-    
     #statusOverlay .popup {
         margin: 0;
         max-width: none;
@@ -1096,7 +1087,6 @@
         padding: 12px 16px;
         text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
-
     body.video-mode #chat {
       display: block; 
       position: absolute;
@@ -1117,7 +1107,6 @@
         opacity: 0;
         pointer-events: none;
     }
-
     body.video-mode #messages {
       color: #fff;
       text-shadow: none;
@@ -1134,7 +1123,6 @@
     body.video-mode .stranger {
        background-color: rgba(31, 41, 55, 0.7) !important;
     }
-
     body.video-mode .popup {
         color: #f0f0f0;
         text-shadow: 0 1px 3px rgba(0,0,0,0.8);
@@ -1145,14 +1133,11 @@
     body.video-mode .footerNote {
         display: none;
     }
-    
     body.video-mode footer.hidden {
         transform: translateY(120%);
         opacity: 0;
         pointer-events: none;
     }
-    /* === END: NEW VIDEO MODE STYLES === */
-    
     #videoToggleBtn.active {
        filter: drop-shadow(0 0 4px #007bff);
     }
@@ -1160,8 +1145,6 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
-
-    /* === START: DESKTOP VIDEO MODE LAYOUT === */
     @media (min-width: 768px) {
         body.video-mode #video-container {
             flex-direction: row; 
@@ -1170,11 +1153,9 @@
             width: 50%;
             height: 100%;
         }
-        
         body.video-mode #statusOverlay {
            display: none !important;
         }
-
         body.video-mode #chat {
             top: 0;
             bottom: 0;
@@ -1187,11 +1168,12 @@
             mask-image: linear-gradient(to bottom, black calc(100% - 90px), transparent 100%);
         }
     }
-    /* === END: DESKTOP VIDEO MODE LAYOUT === */
+    /* === YOUR ORIGINAL CSS END === */
   </style>
 </head>
 <body class="dark-mode">
 
+  <!-- CHAT APP CONTAINER (Login ke baad dikhega) -->
   <div id="chat-app-container">
     <header>
       <div class="left">
@@ -1205,10 +1187,6 @@
                 <animate attributeName="stop-color" dur="6s" values="#007bff;#6a00ff;#00eaff;#007bff" repeatCount="indefinite"/>
               </stop>
             </linearGradient>
-            <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="6" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
           </defs>
           <g transform="translate(60,70) scale(1.2)">
             <circle cx="0" cy="0" r="45" fill="url(#gBubble)"/>
@@ -1221,6 +1199,7 @@
       </div>
       <div id="headerStatus"></div>
       <div class="right">
+        <!-- MERGED: Logout Button -->
         <button id="logoutBtn" class="icon-btn" title="Logout" style="display: none;">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         </button>
@@ -1297,6 +1276,7 @@
     <div id="emojiPicker" aria-hidden="true"></div>
   </div>
 
+  <!-- === LOGIN/SIGNUP SCREENS START (MERGED) === -->
   <div id="start-screen" class="screen active">
     <div class="auth-container">
         <svg class="logo-emoji" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -1348,8 +1328,11 @@
         </div>
     </div>
   </div>
+  <!-- === LOGIN/SIGNUP SCREENS END === -->
+
   <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
   
+  <!-- === FIREBASE & AUTH LOGIC START (MERGED) === -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { 
@@ -1361,7 +1344,6 @@
       signOut
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    // Your actual Firebase project configuration is now here
     const firebaseConfig = {
       apiKey: "AIzaSyC047RG8WyTdYjxi_nN8Smc6RqQRtAB3jc",
       authDomain: "tiktalklogin47.firebaseapp.com",
@@ -1454,10 +1436,10 @@
       }
     }
   </script>
+  <!-- === FIREBASE & AUTH LOGIC END === -->
+
+  <!-- === YOUR ORIGINAL SCRIPT START === -->
   <script>
-    // =================================================================
-    // ADS LOGIC - START
-    // =================================================================
     let lastAdTime = 0;
     const adCooldown = 8 * 60 * 1000; 
     let isFirstNextClickInSession = true;
@@ -1473,9 +1455,6 @@
           console.error("Error executing Monetag ad code:", error);
       }
     }
-    // =================================================================
-    // ADS LOGIC - END
-    // =================================================================
 
     let localStream;
     let peerConnection;
@@ -1541,7 +1520,6 @@
           });
           emojiPicker.appendChild(picker);
           window._emojiPickerInstance = picker;
-
           setTimeout(() => {
             const pickerElement = emojiPicker.querySelector('em-emoji-picker');
             if (pickerElement && pickerElement.shadowRoot) {
@@ -1789,8 +1767,10 @@
     const typingIndicator = document.getElementById("typingIndicator");
     const footer = document.querySelector("footer");
     const emojiPicker = document.getElementById("emojiPicker");
-    window.ws = null;
+    
+    window.ws = null; 
     let typingTimeout;
+    
     let isConnected = false;
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 5;
@@ -1810,7 +1790,6 @@
       const isEmojiPickerOpen = emojiPicker.classList.contains('show');
       const isDesktop = window.matchMedia("(min-width: 768px)").matches;
       let keyboardHeight = 0;
-
       if ('virtualKeyboard' in navigator) {
         keyboardHeight = navigator.virtualKeyboard.boundingRect.height;
       } else if (window.visualViewport) {
@@ -1818,14 +1797,12 @@
         const windowBottom = window.innerHeight;
         keyboardHeight = Math.max(0, windowBottom - visualViewportBottom);
       }
-
       if (keyboardHeight > 0) {
         lastKeyboardHeight = Math.max(keyboardHeight, 300);
         localStorage.setItem('lastKeyboardHeight', lastKeyboardHeight);
       } else if (!isKeyboardOpen && !isEmojiPickerOpen) {
         lastKeyboardHeight = parseInt(localStorage.getItem('lastKeyboardHeight')) || 350;
       }
-
       let emojiPickerHeight = lastKeyboardHeight;
       if (isDesktop) {
         emojiPickerHeight = Math.min(lastKeyboardHeight, 350);
@@ -1833,9 +1810,7 @@
         emojiPickerHeight = Math.min(lastKeyboardHeight, window.innerHeight * 0.7);
       }
       document.documentElement.style.setProperty('--emoji-picker-height', `${emojiPickerHeight}px`);
-      
       let bottomOffset = 0;
-
       if (isKeyboardOpen) {
         bottomOffset = keyboardHeight;
         footer.style.transition = 'bottom 0.3s ease';
@@ -1850,29 +1825,23 @@
         footer.style.bottom = `calc(10px + ${safeAreaBottom}px)`;
         emojiPicker.style.bottom = isDesktop ? `calc(56px + 15px + ${safeAreaBottom}px)` : `calc(10px + ${safeAreaBottom}px)`;
       }
-      
       const footerCurrentHeight = footer.offsetHeight || 56;
       const totalPaddingBottom = bottomOffset + (isEmojiPickerOpen && !isDesktop ? footerCurrentHeight : 0) + 140;
-      
       if(chatDiv && !document.body.classList.contains('video-mode')) {
         chatDiv.style.paddingBottom = `calc(${totalPaddingBottom}px + ${safeAreaBottom}px)`;
       }
       if(footerNote) footerNote.style.bottom = `calc(${footerCurrentHeight + bottomOffset}px + ${safeAreaBottom}px + 10px)`;
       if(startChattingBtn) startChattingBtn.style.bottom = `calc(${footerCurrentHeight + bottomOffset}px + ${safeAreaBottom}px + 35px)`;
-
       if (chatDiv && !document.body.classList.contains('video-mode')) {
         chatDiv.style.paddingTop = `calc(${headerHeight}px + 10px + ${safeAreaTop}px)`;
       }
-      
     }
 
     const debouncedAdjustLayout = debounce(adjustLayoutForKeyboard, 50);
-
     if (window.visualViewport && !('virtualKeyboard' in navigator)) {
       window.visualViewport.addEventListener("resize", debouncedAdjustLayout);
       window.visualViewport.addEventListener("scroll", debouncedAdjustLayout);
     }
-
     window.addEventListener("resize", debouncedAdjustLayout);
     window.addEventListener("load", debouncedAdjustLayout);
 
@@ -1891,19 +1860,15 @@
         const headerStatus = document.getElementById("headerStatus");
         const chatDiv = document.getElementById("chat");
         const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-        
         let popupContent = '';
         let headerContent = '';
-        
         const searchingHTML = `<div class="popup"><div class="searching-container"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text">Searching Stranger...</div></div></div>`;
         const connectedHTML = `<div class="popup"><span class="connected-checkmark"></span><span>Connected! Say Hi 👋</span></div>`;
         const disconnectedHTML = `<div class="popup">❌ Stranger disconnected</div>`;
-
         if (isVideoEnabled && isDesktop) {
             messagesDiv.innerHTML = '';
             statusOverlay.style.display = 'none';
             chatDiv.style.display = 'block';
-
             if (text.includes("Searching")) {
                 headerContent = `<div class="searching-container" style="padding:0;"><div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div><div class="searching-text" style="color: inherit;">Searching...</div></div>`;
                 isConnected = false;
@@ -1926,7 +1891,6 @@
             } else {
                  headerStatus.style.display = 'none';
             }
-
             if(headerContent) {
                 headerStatus.innerHTML = headerContent;
                 headerStatus.style.display = 'flex';
@@ -1936,7 +1900,6 @@
             if (isStatusPopup) {
                 chatDiv.style.display = 'none';
                 statusOverlay.style.display = 'flex';
-                
                 if (text.includes("Searching")) {
                     popupContent = searchingHTML;
                     isConnected = false;
@@ -1967,7 +1930,6 @@
             headerStatus.style.display = 'none';
             statusOverlay.style.display = 'none';
             chatDiv.style.display = 'block';
-
             if (text.includes("Searching")) {
                 popupContent = searchingHTML;
                 isConnected = false;
@@ -1988,7 +1950,6 @@
             }
             messagesDiv.innerHTML = popupContent;
         }
-        
         updateInputState();
     }
 
@@ -2006,7 +1967,6 @@
         const videoIcon = videoToggleBtn.querySelector('.video-icon');
         const chatIcon = videoToggleBtn.querySelector('.chat-icon');
         isVideoEnabled = !isVideoEnabled;
-
         if (isVideoEnabled) {
             videoIcon.style.display = 'none';
             chatIcon.style.display = 'block';
@@ -2014,16 +1974,12 @@
             videoIcon.style.display = 'block';
             chatIcon.style.display = 'none';
         }
-
         startChattingBtn.style.display = 'block';
         hasStartedChat = false;
         nextBtn.disabled = true;
-        
         videoToggleBtn.classList.toggle('active', isVideoEnabled);
         document.body.classList.toggle('video-mode', isVideoEnabled);
-
         showPopup("Welcome to TikTalk! Click 'Start Chat' to connect with a stranger.");
-        
         if (isVideoEnabled) {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -2041,11 +1997,9 @@
         } else {
             stopAllStreams(true); 
         }
-        
         footer.classList.remove('hidden');
         document.getElementById('chat').classList.remove('hidden');
         clearTimeout(footerHideTimeout);
-        
         if (window.ws && window.ws.readyState === WebSocket.OPEN) {
             window.ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
             window.ws.close();
@@ -2097,19 +2051,14 @@
       showPopup("🔍 Searching Stranger...");
       typingIndicator.style.display = "none";
       window.ws = new WebSocket(wsUrl);
-
       window.ws.onopen = () => {
         reconnectAttempts = 0;
         updateInputState();
         window.ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
       };
-
       window.ws.onmessage = async (event) => {
         try {
           const data = JSON.parse(event.data);
-          const statusOverlay = document.getElementById("statusOverlay");
-          const chatDiv = document.getElementById("chat");
-          
           switch(data.type) {
             case "system":
               if (data.text === "waiting" && !isConnected) {
@@ -2190,7 +2139,6 @@
           console.error("Error parsing WebSocket message:", e);
         }
       };
-
       window.ws.onclose = () => {
         if (isConnected) {
           showPopup("❌ Stranger disconnected");
@@ -2203,7 +2151,6 @@
         document.getElementById('chat').classList.remove('hidden');
         clearTimeout(footerHideTimeout);
       };
-
       window.ws.onerror = (err) => {
         console.error("WebSocket error:", err);
         window.ws.close();
@@ -2211,18 +2158,13 @@
     }
     
     const handleSend = (e) => {
-      if(e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-      }
+      if(e) { e.preventDefault(); e.stopImmediatePropagation(); }
       if (isConnected && input.value.trim()) {
         window.ws.send(JSON.stringify({ type: "message", text: input.value }));
         addMessage(input.value, "me");
         input.value = "";
-        
         sendBtn.style.display = 'none';
         nextBtn.style.display = 'flex';
-
         emojiPicker.classList.remove('show');
         emojiPicker.style.display = 'none';
         document.getElementById("emojiToggle").textContent = "😊";
@@ -2234,17 +2176,13 @@
     sendBtn.addEventListener("touchstart", handleSend, { passive: false });
 
     const handleNext = (e) => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      
+      e.preventDefault(); e.stopImmediatePropagation();
       const now = new Date().getTime();
-
       if (isFirstNextClickInSession || (now - lastAdTime > adCooldown)) {
         showMonetagAd();
         lastAdTime = now;
         isFirstNextClickInSession = false;
       }
-
       footer.classList.remove('hidden');
       document.getElementById('chat').classList.remove('hidden');
       clearTimeout(footerHideTimeout);
@@ -2291,18 +2229,10 @@
         if (isDesktop && isVideoEnabled && isConnected) {
             const localVideoEl = document.getElementById('localVideo');
             if (!localVideoEl) return;
-
             const videoRect = localVideoEl.getBoundingClientRect();
             const bottomTriggerHeight = 80;
-            
-            const isOverLocalVideo = (
-                e.clientX >= videoRect.left &&
-                e.clientX <= videoRect.right &&
-                e.clientY >= videoRect.top &&
-                e.clientY <= videoRect.bottom
-            );
+            const isOverLocalVideo = (e.clientX >= videoRect.left && e.clientX <= videoRect.right && e.clientY >= videoRect.top && e.clientY <= videoRect.bottom);
             const isAtBottom = window.innerHeight - e.clientY < bottomTriggerHeight;
-
             if (isOverLocalVideo || isAtBottom) {
                 if (footer.classList.contains('hidden')) {
                     footer.classList.remove('hidden');
@@ -2324,13 +2254,9 @@
     document.body.addEventListener('dblclick', () => {
         const isDesktop = window.matchMedia("(min-width: 768px)").matches;
         if (!isDesktop) return;
-
         if (document.fullscreenElement || document.webkitFullscreenElement) {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            }
+            if (document.exitFullscreen) { document.exitFullscreen(); } 
+            else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
         }
     });
 
@@ -2342,11 +2268,12 @@
         showPopup("Welcome to TikTalk! Click 'Start Chat' to connect with a stranger.");
         updateInputState();
     }
-    // The setInitialState() function is now called by the Firebase auth logic when a user logs in.
+    // Yahan se `setInitialState()` call hata diya gaya hai. Ab yeh Firebase se call hoga.
   </script>
+  <!-- === YOUR ORIGINAL SCRIPT END === -->
 
+  <!-- === PWA INSTALL SCRIPT (MERGED) === -->
   <script>
-    // Service Worker ko register karne ka code
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then(registration => {
@@ -2357,5 +2284,5 @@
       });
     }
   </script>
-  </body>
+</body>
 </html>
