@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - TikTalk</title>
+  <meta name="theme-color" content="#10161d">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: #fff;
+      color: #0f172a;
+      transition: background 0.3s, color 0.3s;
+      line-height: 1.6;
+    }
+    body.dark-mode {
+      background: #0b0f15;
+      color: #e5e7eb;
+    }
+    header {
+      padding: 15px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background: #fff;
+    }
+    body.dark-mode header {
+      background: #10161d;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    header a {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    header .logo-text {
+        font-size: 24px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-weight: 800;
+        color: #007bff;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+    p {
+      margin-bottom: 25px;
+      font-size: 1.2em;
+    }
+    .email-link {
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 25px;
+      text-decoration: none;
+      font-size: 1.1em;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    .email-link:hover {
+      background-color: #0056b3;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <script>
+    // Apply theme from localStorage on load
+    (function() {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+      }
+    })();
+  </script>
+
+  <header>
+    <a href="/">
+        <span class="logo-text">TikTalk</span>
+    </a>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1>Contact Us</h1>
+      <p>If you have any questions, feedback, or need support, please feel free to reach out to us.</p>
+      <p>The best way to contact us is by email.</p>
+      <a href="mailto:tiktalkstrangerchat@gmail.com" class="email-link">tiktalkstrangerchat@gmail.com</a>
+    </div>
+  </main>
+
+</body>
+</html>
