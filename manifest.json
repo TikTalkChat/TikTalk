@@ -2,20 +2,20 @@
     "name": "TikTalk - Stranger Chat",
     "short_name": "TikTalk",
     "description": "Chat with strangers from around the world.",
-    "start_url": "/TikTalk/index.html",
+    "start_url": "/index.html",
     "display": "standalone",
     "background_color": "#FFFFFF",
     "theme_color": "#10161d",
     "orientation": "portrait-primary",
     "icons": [
         {
-            "src": "/TikTalk/assets/logo-192x192.png",
+            "src": "/assets/logo-192x192.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "/TikTalk/assets/logo-512x512.png",
+            "src": "/assets/logo-512x512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
