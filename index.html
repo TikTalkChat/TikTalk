@@ -793,6 +793,50 @@
       width: 28px;
       height: 28px;
     }
+    
+    /* === CHANGE START: Added styles for URL copy box === */
+    .url-container {
+      display: flex;
+      align-items: center;
+      padding: 0 15px 15px 15px;
+      gap: 8px;
+    }
+    #shareUrl {
+      flex-grow: 1;
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 12px;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      outline: none;
+      font-family: monospace;
+    }
+    body.dark-mode #shareUrl {
+      background-color: #1e293b;
+      border-color: #334155;
+      color: #cbd5e1;
+    }
+    #copyUrlBtn {
+      padding: 6px 12px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      flex-shrink: 0;
+      transition: background-color 0.2s;
+    }
+    #copyUrlBtn:hover {
+      background-color: #0056b3;
+    }
+    #copyUrlBtn.copied {
+        background-color: #28a745;
+    }
+    /* === CHANGE END === */
 
     /* STYLES FOR TOAST MESSAGE (FALLBACK FOR SHARE) */
     .toast-message {
@@ -873,6 +917,10 @@
         <button id="themeToggle" class="icon-btn" style="font-size: 20px;">🌙</button>
       </div>
       
+      <div class="url-container">
+          <input type="text" id="shareUrl" readonly>
+          <button id="copyUrlBtn">Copy</button>
+      </div>
       <hr style="border: 0; border-top: 1px solid #ddd3; margin: 10px 0;">
       <a href="privacy.html">Privacy Policy</a>
       <a href="contact.html">Contact Us</a>
@@ -1051,6 +1099,32 @@
               }
           });
       }
+
+      // === CHANGE START: Added logic for the new URL copy box ===
+      const shareUrlInput = document.getElementById('shareUrl');
+      const copyUrlBtn = document.getElementById('copyUrlBtn');
+
+      if (shareUrlInput && copyUrlBtn) {
+          shareUrlInput.value = window.location.href;
+
+          copyUrlBtn.addEventListener('click', () => {
+              shareUrlInput.select();
+              shareUrlInput.setSelectionRange(0, 99999); // For mobile devices
+
+              navigator.clipboard.writeText(shareUrlInput.value).then(() => {
+                  copyUrlBtn.textContent = 'Copied!';
+                  copyUrlBtn.classList.add('copied');
+
+                  setTimeout(() => {
+                      copyUrlBtn.textContent = 'Copy';
+                      copyUrlBtn.classList.remove('copied');
+                  }, 2000);
+              }).catch(err => {
+                  console.error('Failed to copy URL: ', err);
+              });
+          });
+      }
+      // === CHANGE END ===
 
       document.addEventListener('click', (e) => {
           if (moreMenuDropdown && !moreMenuBtn.contains(e.target) && !moreMenuDropdown.contains(e.target)) {
