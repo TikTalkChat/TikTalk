@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - TikTalk</title>
+  <meta name="theme-color" content="#10161d">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: #fff;
+      color: #0f172a;
+      transition: background 0.3s, color 0.3s;
+      line-height: 1.6;
+    }
+    body.dark-mode {
+      background: #0b0f15;
+      color: #e5e7eb;
+    }
+    header {
+      padding: 15px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background: #fff;
+    }
+    body.dark-mode header {
+      background: #10161d;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    header a {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    header .logo-text {
+        font-size: 24px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-weight: 800;
+        color: #007bff;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+    h2 {
+      font-size: 1.8em;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 5px;
+    }
+    body.dark-mode h2 {
+        border-bottom-color: #2d3748;
+    }
+    p, li {
+      margin-bottom: 15px;
+      font-size: 1.1em;
+    }
+    ul, ol {
+        padding-left: 25px;
+    }
+    li {
+        margin-bottom: 10px;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .tagline {
+        font-style: italic;
+        text-align: center;
+        margin-top: 30px;
+        font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+
+  <script>
+    // Apply theme from localStorage on load
+    (function() {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+      }
+    })();
+  </script>
+
+  <header>
+    <a href="/">
+        <span class="logo-text">TikTalk</span>
+    </a>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1>TikTalk</h1>
+      <p>👋 <em>Hi, welcome to TikTalk!</em></p>
+
+      <h2>🌟 TikTalk – Chat With Strangers</h2>
+      <p><strong>No login. No registration.</strong> Just instant, anonymous chats!</p>
+      
+      <p>TikTalk is a simple and fast platform designed to connect you with new people from around the world. Whether you want to have a quick chat or a face-to-face conversation, we make it easy and secure.</p>
+
+      <h2>Features</h2>
+      <ul>
+        <li>✅ <strong>Text Chat</strong> – Classic messaging for quick and easy conversations.</li>
+        <li>✅ <strong>Video Calls</strong> – Connect face-to-face for a more personal experience.</li>
+        <li>✅ <strong>100% Anonymous</strong> – We don't ask for your name, email, or any personal data. Your privacy comes first.</li>
+        <li>✅ <strong>Simple & Fast</strong> – Just click "Start Chat" and you're instantly connected to someone new.</li>
+      </ul>
+      
+      <h2>How It Works</h2>
+      <ol>
+          <li>Click the "Start Chat" button on the main screen.</li>
+          <li>We will instantly connect you with a random stranger.</li>
+          <li>Say hi! If you want to talk to someone else, just click "Next".</li>
+          <li>Enjoy your conversation!</li>
+      </ol>
+
+      <p class="tagline">Let’s make conversations fun again.</p>
+    </div>
+  </main>
+
+</body>
+</html>
