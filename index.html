@@ -435,8 +435,8 @@
         max-height: var(--emoji-picker-height, 70vh);
       }
       .right {
-        gap: 6px;
-        padding-right: 8px;
+        gap: 4px;
+        padding-right: 5px;
       }
       header {
         padding: 6px 8px;
@@ -530,9 +530,9 @@
       position: relative;
       display: flex !important;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       z-index: 10004;
-      padding-right: 10px;
+      padding-right: 5px;
     }
     button:focus, button:active,
     .icon-btn:focus, .icon-btn:active,
@@ -898,7 +898,6 @@
     </main>
   </div>
   <button id="startChattingBtn" class="start-chatting-btn">Start Chat</button>
-  <p class="footerNote">Made in India <span class="heart">♥️</span></p>
   <footer>
     <button id="emojiToggle" aria-label="Toggle emoji picker" aria-expanded="false">😊</button>
     <div class="inputWrapper">
@@ -1256,7 +1255,7 @@
       const chatDiv = document.getElementById("chat");
       const footerNote = document.querySelector(".footerNote");
       const emojiPicker = document.getElementById("emojiPicker");
-      const headerHeight = header.offsetHeight || 76;
+      const headerHeight = document.body.classList.contains('video-mode') ? 44 : 76;
       let safeAreaBottom = parseInt(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)') || '0', 10);
       const isKeyboardOpen = document.activeElement === document.getElementById("messageInput");
       const isEmojiPickerOpen = emojiPicker.classList.contains('show');
@@ -1441,7 +1440,6 @@
         nextBtn.disabled = true;
         videoToggleBtn.classList.toggle('active', isVideoEnabled);
         document.body.classList.toggle('video-mode', isVideoEnabled);
-        showPopup("Welcome to TikTalk! Click 'Start Chat' to connect with a stranger.");
         
         if (isVideoEnabled) {
             try {
@@ -1469,6 +1467,8 @@
             ws.send(JSON.stringify({ type: 'mode_change', video: isVideoEnabled }));
             ws.close();
         }
+        
+        showPopup("Welcome to TikTalk! Click 'Start Chat' to connect with a stranger.");
         adjustLayoutForKeyboard();
     });
 
