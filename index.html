@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TikTalk - Stranger Chat</title>
   
-  <meta name="theme-color" content="#10161d">
+  <meta name="theme-color" id="theme-color-meta" content="#10161d">
   <link rel="manifest" href="manifest.json">
   <meta name="monetag" content="b98558b06dec2f7a5ea0903805e7f8c8">
   <style>
@@ -1100,7 +1100,6 @@
           });
       }
 
-      // === CHANGE START: Added logic for the new URL copy box ===
       const shareUrlInput = document.getElementById('shareUrl');
       const copyUrlBtn = document.getElementById('copyUrlBtn');
 
@@ -1109,7 +1108,7 @@
 
           copyUrlBtn.addEventListener('click', () => {
               shareUrlInput.select();
-              shareUrlInput.setSelectionRange(0, 99999); // For mobile devices
+              shareUrlInput.setSelectionRange(0, 99999); 
 
               navigator.clipboard.writeText(shareUrlInput.value).then(() => {
                   copyUrlBtn.textContent = 'Copied!';
@@ -1124,7 +1123,6 @@
               });
           });
       }
-      // === CHANGE END ===
 
       document.addEventListener('click', (e) => {
           if (moreMenuDropdown && !moreMenuBtn.contains(e.target) && !moreMenuDropdown.contains(e.target)) {
@@ -1134,10 +1132,8 @@
       
       const savedTheme = localStorage.getItem("theme");
       const themeToggle = document.getElementById("themeToggle");
-      if (savedTheme === "dark") {
-        document.body.classList.add("dark-mode");
-        if(themeToggle) themeToggle.textContent = "☀️";
-      }
+      updateTheme(savedTheme === "dark"); 
+
       if ('virtualKeyboard' in navigator) {
         navigator.virtualKeyboard.overlaysContent = true;
         navigator.virtualKeyboard.addEventListener('geometrychange', debouncedAdjustLayout);
@@ -1256,18 +1252,33 @@
     });
 
     const themeToggle = document.getElementById("themeToggle");
-    const handleThemeToggle = (e) => {
-      e.preventDefault();
-      document.body.classList.toggle("dark-mode");
-      themeToggle.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+    const themeColorMeta = document.getElementById("theme-color-meta");
 
-      if (window._emojiPickerInstance) {
-        window._emojiPickerInstance.setOptions({
-          theme: document.body.classList.contains("dark-mode") ? "dark" : "light"
-        });
-      }
-      localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
+    function updateTheme(isDarkMode) {
+        if (isDarkMode) {
+            document.body.classList.add("dark-mode");
+            if (themeToggle) themeToggle.textContent = "☀️";
+            if (themeColorMeta) themeColorMeta.setAttribute("content", "#10161d");
+        } else {
+            document.body.classList.remove("dark-mode");
+            if (themeToggle) themeToggle.textContent = "🌙";
+            if (themeColorMeta) themeColorMeta.setAttribute("content", "#FFFFFF");
+        }
+
+        if (window._emojiPickerInstance) {
+            window._emojiPickerInstance.setOptions({
+              theme: isDarkMode ? "dark" : "light"
+            });
+        }
+        localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    }
+
+    const handleThemeToggle = (e) => {
+        e.preventDefault();
+        const isCurrentlyDark = document.body.classList.contains("dark-mode");
+        updateTheme(!isCurrentlyDark);
     };
+
     if (themeToggle) {
         themeToggle.addEventListener("click", handleThemeToggle);
         themeToggle.addEventListener("touchstart", handleThemeToggle, { passive: false });
