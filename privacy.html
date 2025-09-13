@@ -26,10 +26,22 @@
       padding: 15px 20px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       background: #fff;
+      display: flex;
+      align-items: center;
     }
     body.dark-mode header {
       background: #10161d;
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .back-btn {
+        background: none;
+        border: none;
+        font-size: 32px;
+        line-height: 1;
+        font-weight: 300;
+        color: inherit;
+        cursor: pointer;
+        padding-right: 15px;
     }
     header a {
         text-decoration: none;
@@ -83,7 +95,6 @@
 <body>
 
   <script>
-    // Apply theme from localStorage on load
     (function() {
       const savedTheme = localStorage.getItem("theme");
       if (savedTheme === "dark") {
@@ -93,6 +104,7 @@
   </script>
 
   <header>
+    <button onclick="history.back()" class="back-btn" aria-label="Go back">‹</button>
     <a href="/">
         <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
