@@ -9,13 +9,13 @@
     "orientation": "portrait-primary",
     "icons": [
         {
-            "src": "https://em-content.zobj.net/source/apple/354/smiling-face-with-smiling-eyes_1f60a.png",
+            "src": "icons/logo-192x192.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "https://em-content.zobj.net/source/apple/354/smiling-face-with-smiling-eyes_1f60a.png",
+            "src": "icons/logo-512x512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
